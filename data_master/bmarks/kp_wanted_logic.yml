@@ -1,0 +1,72 @@
+#
+sort:
+  any: app
+sandbox_key: crit
+
+attrs_age: [ 'app' ]
+# == kp_si_fields ! XXX delete here when no usage
+role_index_pat: "${app}_${behoerde}_${crit}_${sig_item}"
+#role_index_pat: "${app}_${behoerde}_${crit}_${item}"
+
+
+uber:
+  items:
+    - "uber"
+    -
+segeln:
+  items: [Atlantik, Ostsee, Mittelmeer]
+  map:
+    Atlantik: "Atlantik"
+    Ostsee: "Ostsee"
+    Mittelmeer: "Mittelmeer"
+
+psy:
+  items: [ psywant ]
+  map:
+    psywant: "element $item"
+  title_pat: "Transport P.*"
+  username_pat: "z.*rz-sued-bayern.de" # regex XXX ? 
+  title_new_pat: "Transport PIN ${vm}"
+  username_new_pat: "${hostname}.rz-sued-bayern.de"
+
+to-sort:
+  case_1:
+    app: eIP
+    dst:
+    sub_all: [ArbG, SozG, FinG]
+    use_subgroups: True
+    age: "eIP_${behoerde}_${crit}"
+    role_prefix: eIP_
+    loop_gericht: True
+    items:
+      - Admin
+      - Operator
+    map:
+      Admin: "$behoerde Domain $crit Admin"
+      Operator: "$behoerde Domain $crit Operator"
+    username_new_pat_d:
+      Admin: "weblogic"
+      Operator: "operator"
+    title_new_pat: "${crit}_${item}"
+    #pattern_title_old: "%s.*Domain.*%s.*%s"
+    pattern_title_old: "$behoerde.*Domain.$crit.*$item"
+    pattern_title_list:
+  case_2:
+    app: eKP
+    dst: eKP  # logic prob together with sub_all
+    sub_all: [FachG]
+    age: "eKP_${crit}"
+    loop_gericht: False
+    items:
+      - Admin
+      - Operator
+    map:
+      Admin:    "eKP Domain $crit Admin"
+      Operator: "eKP Domain $crit Operator"
+    username_new_pat_d:
+      Admin: "weblogic"
+    title_new_pat: "${crit}_${item}"
+    pattern_title_old: "$behoerde.*Domain.$crit.*$item"
+    pattern_title_list:
+      - "eKP.*Domain.*$crit.*$item"
+

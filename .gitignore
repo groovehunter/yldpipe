@@ -1,0 +1,28 @@
+test/*
+test_*
+*.swp
+*.swo
+*.pyc
+__pycache__/
+
+# data output
+out/
+# data input
+data_in/
+
+# misc
+docs/
+# old
+old/
+away/
+test/
+creds.py
+_creds.py
+log/
+.spyproject/
+.vs/
+.vscode/
+*.iml
+pythonProject/
+infra_tools/
+.idea/

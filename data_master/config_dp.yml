@@ -1,0 +1,63 @@
+# MAIN datapipeline configuration file
+
+# profile: excel_copy
+# profile: split_duckdb_to_csv
+# profile: excel_split_first
+#profile: ex2ansible
+profile: treemod_bmarks
+
+default_profile:
+  # mode is (si_split|si_1to1|ex2an)
+  mode: si_split
+  # reader and writer classes
+  reader: excel
+  writer: csv
+  # if the data should be validated or modified 
+  transform: true
+  # for split mode, which sheet of source excel should be taken
+  default_sheet_nr: 0
+  fnames_src: data
+  fnames_dst: config
+
+treemod_bmarks:
+  reader: excel  # not used, but why not use reader for the src json??
+  writer: excel
+  storage_src: json
+  storage_dst: yaml
+  sub: bmarks
+  sub_in: bmarks
+  sub_out: bmarks
+
+keepass_build:
+  reader: excel
+  writer: excel
+  sub: keepass
+  sub_in: SI
+  sub_out: keepass
+
+# ServerInfrastruktur.xslx splitten 
+excel_copy:
+  mode: si_1to1
+  reader: excel
+  writer: excel
+
+excel_split_first:
+  mode: si_split
+  reader: excel
+  writer: excel
+
+split_duckdb_to_csv:
+  mode: si_split
+  reader: duckdb
+  writer: csv
+
+ex2ansible:
+  mode: ex2an
+  reader: excel
+  writer: ansible
+  sub_in: SI
+  sub_out: ansible
+
+# in 1to1 mode, fnames are fetched from the reader
+
+# in split mode, we need to set fnames for all output sheets !

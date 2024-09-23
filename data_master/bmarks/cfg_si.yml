@@ -1,0 +1,32 @@
+
+away:
+profile: 
+  reader: excel
+  writer: excel
+  sub: keepass
+  sub_in: SI
+  sub_out: keepass
+
+profile_name: treemod_bmarks
+
+
+in_SI: 'Server_Infrastruktur_NG.xlsx'
+# in_SI: 'Fachgerichte Server.csv'
+out_SI: 'kp_progress_table.xlsx'
+out_SI2: 'kp_old_entries.xlsx'
+out_matched_entries: 'kp_matched_entries.xlsx'
+out_debug: 'kp_debug.xlsx'
+out_wanted: 'kp_wanted.xlsx'
+
+db_src: bookmarks.json
+db_dst: bookmarks.yml
+
+in_fns:
+  - Fachgerichte Server
+# out_fns:
+
+
+db_file_dst: eip_NG.yml
+db_file_empty: eip_NG_empty.yml
+
+pw_dst: test

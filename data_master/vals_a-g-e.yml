@@ -1,0 +1,20 @@
+# yaml config with some meta values and group of values
+
+env:
+  - Prod
+  - Vorprod
+  - Test
+  - Schul
+
+ger:
+  - ArbG
+  - FinG
+  - SozG
+#  - FachG
+#  - IT-DLZ
+
+app:
+  - eIP
+  - eKP
+  - EGVPE
+
