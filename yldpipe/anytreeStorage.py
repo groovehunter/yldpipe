@@ -1,6 +1,8 @@
 from AbstractBase import AbstractStorage
 from anytree.search import find_by_attr
-from anytree import RenderTree, Node
+from anytree import RenderTree, Node, PreOrderIter
+from anytree.exporter import DictExporter, JsonExporter
+import yaml, json
 from utils import setup_logger
 import logging
 
@@ -18,6 +20,7 @@ class CustomNode(Node):
         super().__init__(name, **kwargs)
         repr = '/'.join( [str(node.name) for node in self.path] )
         self.mypath = repr
+        self.entries = []
         # logger.debug('self._path: %s', self._mypath)
     @property
     def mypath(self):
@@ -54,7 +57,7 @@ class AnytreeStorage(AbstractStorage):
             out = res.name
         else:
             out = None
-        logger.debug('FIND: In %s val: %s - res: %s', self.__class__.__name__, val, out)
+        # logger.debug('FIND: In %s val: %s - res: %s', self.__class__.__name__, val, out)
         return res
 
     def _import(self):
@@ -63,6 +66,31 @@ class AnytreeStorage(AbstractStorage):
         for node in self.root.children:
             logger.debug('node.title: %s', node.title)
         logger.debug('root children: %s', self.root.children)
+
+    def export(self, fp, format='yaml'):
+
+        if format == 'pure_hierarchy':
+            data = {}
+            for node in PreOrderIter(self.root_node):
+                lg.debug('node: %s', node.name)
+                # XXX
+                # write yaml with identions bsaed on
+            #attriter=lambda attrs: [(k, v) for k, v in attrs if k == "name"]
+            exporter = DictExporter(attriter=lambda attrs: [(k, v) for k, v in attrs if k == "name"])
+        if format == 'yaml':
+            exporter = DictExporter()
+            #exporter = DictExporter(attriter=lambda attrs: [(k, v) for k, v in attrs if k == "a"])
+        if format == 'json':
+            exporter = JsonExporter()
+        blob = exporter.export(self.root_node)
+        logger.debug('len(blob) %s, exporting as %s', len(blob), fp)
+        with open(fp, 'w') as file:
+            logger.debug('format: %s', format)
+            if format in ['yaml', 'pure_hierarchy']:
+                yaml.dump(blob, file)
+            if format == 'json':
+                json.dump(blob, file)
+
 
     def find_entry_by_path(self, path):
         pass

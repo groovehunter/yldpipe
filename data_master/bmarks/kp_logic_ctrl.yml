@@ -1,6 +1,6 @@
 # types of
 work:
-  #- dump_group_entries
+  - dump_group_entries
   # next are dependent on dump_group_entries
   #- loop_sandbox
   # - loop_unknown
@@ -31,20 +31,20 @@ drop_for_output: True
 
 ###################
 loop_crit:
-  - to-sort
-  - psy
-  - segeln
+  - menu/to-sort
+  - toolbar/psy
+  - toolbar/segeln
 loop_hostspecific:
-  - uber
+  - toolbar/uber
 
 # with subgroups
-loop_copyall_rec:
-  - menu/jobs
+loop_copyall_rec: []
+# without subgroups
+loop_copyall:
+  - menu/jobs 27-09
   - menu/to-sort
   - toolbar/job
   - toolbar/HD
-# without subgroups
-loop_copyall:
   - toolbar/sound_creation
   - toolbar/IT docs
 

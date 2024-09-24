@@ -10,8 +10,6 @@ profile:
 profile_name: treemod_bmarks
 
 
-in_SI: 'Server_Infrastruktur_NG.xlsx'
-# in_SI: 'Fachgerichte Server.csv'
 out_SI: 'kp_progress_table.xlsx'
 out_SI2: 'kp_old_entries.xlsx'
 out_matched_entries: 'kp_matched_entries.xlsx'
@@ -20,6 +18,7 @@ out_wanted: 'kp_wanted.xlsx'
 
 db_src: bookmarks.json
 db_dst: bookmarks.yml
+tree_original_export_fn: tree_original_export.yml
 
 in_fns:
   - Fachgerichte Server

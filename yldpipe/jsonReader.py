@@ -1,6 +1,6 @@
 import logging
 import json
-from anytree import AnyNode, Node
+from anytree import AnyNode, Node, RenderTree
 from AbstractBase import AbstractReader
 from anytree.importer import JsonImporter
 from utils import setup_logger
@@ -40,6 +40,12 @@ class JsonReader(AbstractReader):
     def get_buffer(self, fn):
         return self.buffer[fn]
 
+class Entry:
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+    def __repr__(self):
+        return "Entry: "+self.title
 
 
 class JsonStorage(AnytreeStorage):
@@ -73,6 +79,7 @@ class JsonStorage(AnytreeStorage):
         self._walk_tree(json, root_node)
         self.root_node = root_node
         self.tree = root_node
+        self.render()
 
     # for firefox bookmark json, or json with children attribute
     def _walk_tree(self, json, node):  # recursive case
@@ -83,14 +90,22 @@ class JsonStorage(AnytreeStorage):
         #logger.debug('json-title: %s', json['title'])
         if 'children' in json.keys():
             for sub_json in json['children']:
-                # logger.debug('sub_json-title: %s', sub_json['title'])
-                child_node = CustomNode(sub_json['title'], parent=node)
-                # self.attr_copy(sub_json, child_node)
-                # [setattr(child_node, attr, sub_json[attr]) for attr in self.attrs]
-                self._walk_tree(sub_json, child_node)
+                if sub_json['typeCode'] == 2:
+                    # logger.debug('typeCode, title: %s, %s', sub_json['typeCode'], sub_json['title'])
+                    child_node = CustomNode(sub_json['title'], parent=node)
+                    self._walk_tree(sub_json, child_node)
+                """
+                if sub_json['typeCode'] == 1:
+                    entry = self.create_entry(sub_json)
+                    node.entries.append(entry)
+                """
         else:
             pass
             # logger.debug('leaf-node: %s', json['title'])
+
+    def create_entry(self, json):
+        entry = Entry(**json)
+        return entry
 
     def find_groups_by_path(self, path):
         path = 'root/'+path

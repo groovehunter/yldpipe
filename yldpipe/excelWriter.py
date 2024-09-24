@@ -7,6 +7,10 @@ from AbstractBase import AbstractWriter
 
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
 
+def safe_fn(unsafe_str):
+    safe = unsafe_str.replace(' ', '_')
+    safe = safe.replace('/', '__')
+    return safe
 
 class ExcelWriter(AbstractWriter, FileBase):
     """ handles a set of destination files, writes to excel"""
@@ -31,6 +35,7 @@ class ExcelWriter(AbstractWriter, FileBase):
         self.dstfn = dstfn
 
     def set_outfiles(self, out_fns):
+        #self.out_fns = [ safe_fn(fn) for fn in out_fns ]
         self.out_fns = out_fns
         logger.debug("self.out_fns : %s", self.out_fns)
 
@@ -46,7 +51,7 @@ class ExcelWriter(AbstractWriter, FileBase):
     def write(self):
         logger.debug("self.out_fns : %s", self.out_fns)
         for out_fn in self.out_fns:
-            sheet_name = out_fn
+            sheet_name = safe_fn(out_fn)
             # logger.debug("len buffer[out_fn] : %s", len(self.buffer[out_fn]))
             #logger.debug("cols buffer[out_fn] : %s", self.buffer[out_fn].columns)
             logger.info("write excel sheet %s", sheet_name)

@@ -67,6 +67,9 @@ class TreeReorderBase(DataBroker):  # YamlConfigSupport):
         attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
         self.kp_src.create_tree_from_json(attrs)
         #self.kp_src._import()
+        # export discovered tree to yaml
+        fp = data_out.joinpath(self.sub, self.cfg_si['tree_original_export_fn'])
+        self.kp_src.export(fp, format='pure_hierarchy')
 
     def set_dst(self):
         fp = data_out.joinpath(self.sub, self.cfg_si['db_dst'])

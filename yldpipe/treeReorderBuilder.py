@@ -82,6 +82,7 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
     def main_flow_ctrl(self):
         self.stats_df_init()
         work = self.cfg_kp_logic_ctrl['work']
+
         ### logic for WANTED entries
         if 'dump_group_entries' in work:
             self.allgroups_age_dump_entries()
@@ -155,14 +156,13 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
             lg.debug('group_lists: %s', group_list)
             for group_name in group_list:
                 path = group_name
-                lg.debug('path is %s', path)
                 group_src = self.kp_src.find_groups_by_path(path)
                 group_dst = self.kp_dst.find_groups_by_path(path)
                 group_logic = self.cfg_kp_wanted_logic.get(group_name, None)
-                lg.debug('group_src: %s, group_dst: %s', group_src, group_dst)
                 if not (group_src and group_dst):
                     lg.error('group_dst or group_src not found: %s', group_name)
                     continue
+                lg.debug('group_src: %s, group_dst: %s', group_src.mypath, group_dst.mypath)
                 self.group_do_entries_copyall(group_src, group_dst, group_logic)
                 if group_src.subgroups:
                     for sub_group in group_src.subgroups:

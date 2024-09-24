@@ -15,7 +15,7 @@ class TreeReorderBuilderWanted:
 
     def allgroups_age_dump_entries(self):
             # self.frame_fields['entries_old_table'] = self.cfg_kp_process_fields['entries_old_table']
-            groups_new = self.cfg_kp_logic_ctrl.get('loop_crit', [])
+            groups_new = self.cfg_kp_logic_ctrl.get('loop_crit', []) + self.cfg_kp_logic_ctrl.get('loop_copyall', [])
             if groups_new is None:
                 return
             for group_name_new in groups_new:
@@ -26,9 +26,7 @@ class TreeReorderBuilderWanted:
                 # includes a call for check_entry_for_prominent_terms, so next step is possible
 
     def allgroups_hs_dump_entries(self):
-        groups_new = self.cfg_kp_logic_ctrl['loop_hostspecific']
-        if groups_new is None:
-            return
+        groups_new = self.cfg_kp_logic_ctrl.get('loop_hostspecific', [])
         self.frame_fields['entries_old_table'] = self.frame_fields['entries_old_sm_table']
         for group_name_new in groups_new:
             group_name_old = self.groups_map_new_to_old(group_name_new)
@@ -36,12 +34,13 @@ class TreeReorderBuilderWanted:
 
     def dump_group_entries(self, group_name_old, group_name_new):
         lg.debug('Entering. group_name_old: %s, group_name_new: %s', group_name_old, group_name_new)
-        group_obj_old = self.kp_src.find_groups_by_path([group_name_old])
-        lg.debug('DUMPING group_obj_old: %s', group_obj_old)
+        group_obj_old = self.kp_src.find_groups_by_path(group_name_old)
+        # lg.debug('DUMPING group_obj_old: %s', group_obj_old)
         entry_attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
         # entries = group_obj_old.entries
         entries = group_obj_old.children
         # logger.debug('entries: %s', entries[:5])
+        lg.debug('len entries: %s', len(entries))
         df_entries = pd.DataFrame(columns=self.frame_fields['entries_old_table'])
         self.stats_init()
         for entry in entries:
@@ -60,36 +59,15 @@ class TreeReorderBuilderWanted:
             if 'path_old' in row:
                 row['path_old'] = str(row['path_old'])
 
-            if row['sig_hostname'] is not None:
-                SI_data = self.get_data_for_host(row['sig_hostname'])
-                if SI_data is not None:
-                    parts = SI_data['Rolle'].split('_')
-                    # logger.debug('parts: %s', parts)
-                    if len(parts) > 1:
-                        if len(parts) > 2:
-                            app, behoerde, crit = parts[0], parts[1], parts[2]
-                        else:
-                            app, crit = parts[0], parts[1]
-                            behoerde = 'FachG'    # XXX make cfg, maybe FachG?
-                        for key in self.cfg_kp_process_fields['kp_si_fields']:
-                            row[key] = locals()[key]
-                        # logger.debug('found app,behoerde,crit: %s,%s,%s for %s of %s',
-                        #       app,behoerde,crit, row['sig_hostname'], row['title_old'])
-                        self.count_suc += 1
-            else:
-                self.count_crit += 1
-                row['status_info'] = 'no hname'
             row['pk'] = self.count
             self.count += 1
             ldf = len(df_entries)
             df_entries.loc[ldf] = row
         self.stats_report(name='10_dump_'+group_name_new)
-        #df_entries = df_entries.sort_values(by=['app', 'behoerde', 'crit', 'sig_item'])
         ## df_entries = df_entries.sort_values(by=self.cfg_kp_wanted_logic['sort'])
-        #self.df_entries[group_name_old] = df_entries.fillna('')
         self.df_d['entries_old'][group_name_old] = df_entries.fillna('')
         self.buffer_names_d['entries_old'][group_name_old] = group_name_old
-        # lg.debug('self.df_entries columns: %s', self.df_entries[group_name_old].columns)
+        # lg.debug('self.df_entries columns: %s', self.df_d['entries_old'][group_name_old].columns)
 
     def check_entry_for_prominent_terms(self, entry, row):
         """ in entries there are certain terms at typical places,

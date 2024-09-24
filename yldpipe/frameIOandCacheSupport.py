@@ -76,31 +76,17 @@ class FrameIOandCacheSupport(DataBroker):
                 # XXX os.remove here?
                 # lg.debug('prep writer for %s', tkey)
                 self.writer_d[tkey].set_outfiles(self.buffer_names_d[tkey].keys())
-                self.writer_d[tkey].set_dstfn(self.root_path+'out_'+tkey+'.xlsx')
+                self.writer_d[tkey].set_dstfn(self.root_path+'/out_'+tkey+'.xlsx')
                 # lg.debug('buffer_names_d[%s].keys(): %s', tkey, self.buffer_names_d[tkey].keys())
-                #for name in self.buffer_names_d[tkey].keys():
-                #    lg.debug('set buffer len=%s for %s', len(self.df_d[tkey[name]]), name)
+                for name in self.buffer_names_d[tkey].keys():
+                    lg.debug('set buffer len=%s for %s', len(self.df_d[tkey[name]]), name)
                 #    self.writer_d[tkey].set_buffer(name, self.df_d[tkey][name])
                 self.writer_d[tkey].init_writer_all()
-
-    def OLD_prep_writer(self):
-        for key in self.cfg_kp_process_fields['xlsx_framedumps']:
-            self.writer_d[key].set_dstfn(data_out.joinpath(self.sub, 'out_'+key+'.xlsx'))
-            if os.path.exists(self.writer_d[key].dstfn):
-                os.remove(self.writer_d[key].dstfn)
-            self.writer_d[key].init_writer_all()
-        for key in self.cfg_kp_process_fields['xlsx_framedumps_groups']:
-            self.writer_d[key].set_dstfn(data_out.joinpath(self.sub, 'out_'+key+'.xlsx'))
-            if os.path.exists(self.writer_d[key].dstfn):
-                os.remove(self.writer_d[key].dstfn)
-            lg.debug('self.writer_d[%s].dstfn: %s', key, self.writer_d[key].dstfn)
-            self.writer_d[key].init_writer_all()
-
 
     def generic_write_all(self):
         for tk_i, tk_item in self.tkeys_d.items():
             for tkey in tk_item:
-                lg.debug('write all for %s', tkey)
+                # lg.debug('write all for %s', tkey)
                 self.writer_d[tkey].set_outfiles(self.buffer_names_d[tkey].keys())
                 for bn_key, bn_item in self.buffer_names_d[tkey].items():
                     if self.cfg_kp_logic_ctrl['drop_for_output'] and self.progress_table_output_drop_fields:
@@ -109,5 +95,4 @@ class FrameIOandCacheSupport(DataBroker):
                     if (len(self.df_d[tkey][bn_key]) == 0):
                         lg.error('len(self.df_d[%s][%s]) == 0', tkey, bn_key)
                     self.writer_d[tkey].set_buffer(bn_key, self.df_d[tkey][bn_key])
-                #lg.debug('self.writer_d[%s].buffer.keys(): %s', tkey, self.writer_d[tkey].buffer.keys())
                 self.writer_d[tkey].write()

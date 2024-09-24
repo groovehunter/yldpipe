@@ -29,15 +29,14 @@ kp_si_fields:
   - siex1
 
 kp_age_sig_fields:
-  - sig_hostname
   - sig_siex1
   - sig_item
 
 entries_old_sm_table:
   dpipe_fields:
-  add: [ pk, role_index, hostname, item ]
+  add: [ pk, role_index, item ]
   kp_si_fields:
-  kp_age_sig_fields:
+  # kp_age_sig_fields:
   kp_old_fields:
   kp_same_fields:
 entries_old_table:
