@@ -1,9 +1,12 @@
+# path_map_true:
+# path items - NO Slash allowed!
+
 DB:
-sound_creation:
-Linux: ['Sonstiges', 'Linux']
+sound_creation: 'sound_creation/RC-505'
+Linux: 'Sonstiges/Linux'
 Weblogic:
 Monitoring:
-Alfresco: ['Alfresco_Solr']
+Alfresco: 'Alfresco_Solr'
 Windows: 
   SQL-Server:
   Rendition-Server:

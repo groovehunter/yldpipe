@@ -92,7 +92,7 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
         if 'loop_unknown' in work:
             self.allgroups_wanted_loop_unknown()
 
-        if True:
+        if 'allgroups_old_match' in work:
             group_list = self.cfg_kp_logic_ctrl['loop_crit']
             self.allgroups_old_match(group_list)
             #group_list = self.cfg_kp_logic_ctrl['loop_hostspecific']
@@ -138,64 +138,49 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
             group_list = self.cfg_kp_logic_ctrl['loop_copyall']
             logger.debug('group_lists: %s', group_list)
             for group_name in group_list:
-                path_src = [group_name]  # because it is a root path
-                path_dst = self.cfg_kp_pathmap_true[group_name]
-                if path_dst is None:
-                    path_dst = [group_name]
-                logger.debug('for groupname: %s path_dst: %s', group_name, path_dst)
+                # group_name is a path, XXX refactor
+                path_src = group_name  # because it is a root path
+                lg.debug('for groupname: %s path_src: %s', group_name, path_src)
+                path_dst = self.cfg_kp_pathmap_true.get(group_name, group_name)
+                lg.debug('for groupname: %s path_dst: %s', group_name, path_dst)
                 group_src = self.kp_src.find_groups_by_path(path_src)
                 group_dst = self.kp_dst.find_groups_by_path(path_dst)
                 group_logic = self.cfg_kp_wanted_logic.get(group_name, None)
-                self.group_do_entries_copyall(group_src, group_dst, group_logic)
+                if (group_src and group_dst):
+                    self.group_do_entries_copyall(group_src, group_dst, group_logic)
         # XXX both  copy methods can be one DRY, flag if subgroups?
 
         if 'loop_copyall_rec' in work:
             group_list = self.cfg_kp_logic_ctrl['loop_copyall_rec']
             lg.debug('group_lists: %s', group_list)
             for group_name in group_list:
-                path = [group_name]
+                path = group_name
+                lg.debug('path is %s', path)
                 group_src = self.kp_src.find_groups_by_path(path)
                 group_dst = self.kp_dst.find_groups_by_path(path)
                 group_logic = self.cfg_kp_wanted_logic.get(group_name, None)
+                lg.debug('group_src: %s, group_dst: %s', group_src, group_dst)
+                if not (group_src and group_dst):
+                    lg.error('group_dst or group_src not found: %s', group_name)
+                    continue
                 self.group_do_entries_copyall(group_src, group_dst, group_logic)
                 if group_src.subgroups:
                     for sub_group in group_src.subgroups:
-                        path = [group_name, sub_group.name]
-                        lg.debug('path is %s', path)
-                        group_src = self.kp_src.find_groups_by_path(path)
-                        group_dst = self.kp_dst.find_groups_by_path(path)
-                        lg.debug('group_src: %s, group_dst: %s', group_src, group_dst)
-                        if group_dst is not None:
-                            self.group_do_entries_copyall(group_src, group_dst, group_logic)
-                        else:
-                            logger.error('group_dst not found: %s', [group_name, sub_group.name])
+                        lg.debug('XXX TODO recursion for subgroups: %s', sub_group)
+
 
     def group_do_entries_copyall(self, group_src, group_dst, group_logic):
         df = pd.DataFrame(columns=self.frame_fields['progress_sm_table'])
         # if transform:
         # syntax from transformFunc ?? not needed i think
         c, rc_suc, rc_err = 0,0,0
-        attrs = ['title', 'username', 'password', 'url', 'notes']
+        attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
+
         # XXX use stats from KeepassBase
         #logger.debug('entries count: %s', len(group_src.entries))
-        logger.debug('entries count: %s', len(group_src.children))
-        """
-        if group_logic.get('attr_logic'):
-            attr_logic = group_logic.get('attr_logic')
-            for entry in group_src.entries:
-                row = {}
-                for attr in attrs:
-                    attr_value = getattr(entry, attr)
-                    if attr in attr_logic.keys():
-                        if attr_logic[attr] is None:
-                            row[attr] = attr_value
-                        else:
-                            row[attr] = 'TODO'
-                    else:
-                        row[attr] = attr_value
-        """
         # XXX use dataframe to update the table
         #for entry in group_src.entries:
+        logger.debug('entries count: %s', len(group_src.children))
         for entry in group_src.children:
             row = {}
             for attr in attrs:
@@ -206,8 +191,7 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
             # logger.debug('group_dst.path: %s', group_dst.path)
             # logger.debug(row)
             try:
-                self.kp_dst.add_entry(group_dst, row['title'], row['username'],
-                                      entry.password, url=row['url'], notes=row['notes'])
+                self.kp_dst.add_entry(group_dst, row)
                 row['status'] = 'OK: Entry copied'
                 # logger.debug('OK entry copied: %s | %s', entry.title, entry.username)
                 rc_suc += 1

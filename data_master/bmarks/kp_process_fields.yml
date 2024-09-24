@@ -7,19 +7,10 @@ stats_fields:
 dpipe_fields:
   - status
   - status_info
-kp_src_all_fields:
-  - guid
-  - title
-  - index
-  - dataAdded
-  - lastModified
-  - id
-  - typeCode
-  - type
-  - root
+
 kp_old_fields:
-  - title_old
-  - uri_old
+  - title
+  - uri
 kp_new_fields:
   - group_new
   - group_path_new
@@ -32,7 +23,8 @@ kp_new_fields_sm:
   - uri_new
 kp_same_fields:
   - dateAdded
-  - uri
+  - lastModified
+  - typeCode
 kp_si_fields:
   - siex1
 

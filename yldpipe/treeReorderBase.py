@@ -64,17 +64,20 @@ class TreeReorderBase(DataBroker):  # YamlConfigSupport):
         fp = data_in.joinpath(self.sub, self.cfg_si['db_src'])
         self.kp_src = self.init_storage_src_class()
         self.kp_src.set_src(fp)
-        self.kp_src.create_tree_from_json()
+        attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
+        self.kp_src.create_tree_from_json(attrs)
         #self.kp_src._import()
 
     def set_dst(self):
         fp = data_out.joinpath(self.sub, self.cfg_si['db_dst'])
         self.kp_dst = self.init_storage_dst_class()
         self.kp_dst.set_src(fp)
-        #self.kp_dst.create_tree_from_yaml(self.kp_dst.data)
+
         fp = data_master.joinpath(self.sub, self.dt_fn)
         self.kp_dst.load_hierarchy_from_yaml(fp)
-        self.kp_dst.create_tree_from_yaml(self.kp_dst.yaml)
+        attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
+        self.kp_dst.create_tree_from_yaml(self.kp_dst.yaml, attrs)
+
 
     def add_df_to_new_tree(self, df):
         lg.debug('len(df): %s', len(df))

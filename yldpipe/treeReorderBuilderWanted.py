@@ -19,6 +19,7 @@ class TreeReorderBuilderWanted:
             if groups_new is None:
                 return
             for group_name_new in groups_new:
+                lg.debug('group_name_new: %s', group_name_new)
                 group_name_old = self.groups_map_new_to_old(group_name_new)
                 self.dump_group_entries(group_name_old, group_name_new)
 
@@ -46,6 +47,7 @@ class TreeReorderBuilderWanted:
         for entry in entries:
             row = {}
             row['status'] = 'UNTOUCHED'
+            logger.debug('entry title: %s', entry.title)
             row = self.check_entry_for_prominent_terms(entry, row)
             # logger.debug('row: %s', row)
             # XXX can check_entry_for_prominent_terms be after the old val assertion?

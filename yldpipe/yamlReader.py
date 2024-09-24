@@ -1,12 +1,13 @@
-import logging
-from abc import abstractmethod
-
+# from abc import abstractmethod
 import yaml
-from AbstractBase import AbstractReader, AbstractStorage
-from utils import setup_logger
-from anytree import AnyNode
-from treeSupport import TreeSupport
+from AbstractBase import AbstractReader
+from anytreeStorage import AnytreeStorage, CustomNode
+from anytree.importer import DictImporter
+# from anytree import Node
+# from treeSupport import TreeSupport
 
+import logging
+from utils import setup_logger
 
 logfn = __name__+'.log'
 logger = setup_logger(__name__, logfn, level=logging.DEBUG)
@@ -41,12 +42,10 @@ class YamlReader(AbstractReader):
     def get_buffer(self, fn):
         return self.buffer[fn]
 
-from anytree.importer import DictImporter
-importer = DictImporter()
 
-# XXX inherit from NodeMixin or own TreeSupport
-class YamlStorage(AbstractStorage, TreeSupport):
+class YamlStorage(AnytreeStorage):
     """ class for yaml tree DB """
+    importer = DictImporter()
 
     def __init__(self, data=None):
         if data is None:
@@ -64,47 +63,55 @@ class YamlStorage(AbstractStorage, TreeSupport):
         with open(fp) as file:
             self.yaml = yaml.load(file, Loader=yaml.FullLoader)
 
-    def _import(self):
-        self.root = importer.import_(self.yaml)
-        logger.debug('self.root: %s', self.root)
-        for node in self.root.children:
-            logger.debug('node.title: %s', node.title)
-        logger.debug('root children: %s', self.root.children)
+    def create_tree_from_yaml(self, yaml, attrs):
+        """ create a tree from a yaml """
+        # if root is given in data, use it, else create a root node
+        root = CustomNode('root')
+        #root.mypath = 'root'
+        self.attrs = attrs
+        self.rec_yaml(yaml, root)
+        self.root_node = root
+        # self.render()
+        # return root
 
-    def create_tree_from_yaml(self, data):
-        self.create_new_anytree_rec_from_dict(data)
+    def rec_yaml(self, data, node):
+        """ recurse nested dict (ie from yaml) and add all content as tree descendants """
+        #logger.debug("enter recursion with node name %s, path=%s", node.name, node.mypath)
+        #if data:
+            #logger.debug('data: %s', data)
+            # [ setattr(node, attr, data.get(attr, None)) for attr in self.attrs ]
+
+        if isinstance(data, dict):
+            for attr in self.attrs:
+                setattr(node, attr, data.get(attr, None))
+            for key, item in data.items():
+                #logger.debug('key: %s, item: %s', key, item)
+                child_node = CustomNode(key, parent=node)
+                child_node.title = key
+                # logger.debug('child_node: %s', child_node.name)
+                self.rec_yaml(item, child_node)
+        else:
+            pass
+
+    def find_groups_by_path(self, path):
+        # logger.debug('path: %s', path)
+        val = 'root/'+path
+        kwargs = {}
+        return super().find_groups_by_path(val, name='mypath', **kwargs)
 
     def find(self, key):
         for k, v in self.yaml.iteritems():
+            logger.debug('k: %s, v: %s', k, v)
             if k == key:
                 yield v
             elif isinstance(v, dict):
-                for result in find(key, v):
+                for result in self.find(key, v):
                     yield result
             elif isinstance(v, list):
                 for d in v:
-                    for result in find(key, d):
+                    for result in self.find(key, d):
                         yield result
 
-    def find_groups_by_path(self, path):
-        last = path[-1]
-        self.find(last)
-        """
-        logger.debug('path: %s', path)
-        data = self.data
-        logger.debug('data: %s', data)
-        #keys = path.split('/')
-        keys = ['root'] + path
-        logger.debug('keys: %s', keys)
-        current = data
-        found = False
-        while not found:
-            if key in current:
-                current = current[key]
-            else:
-                raise KeyError(f"Key '{key}' not found in the path '{path}'")
-        return current
-        """
 
     def find_entry_by_path(self, path):
         pass

@@ -7,8 +7,12 @@ formatter = logging.Formatter('%(levelname)s %(lineno)d %(funcName)s %(message)s
 def setup_logger(name, log_file, level=logging.DEBUG):
     """To setup as many loggers as you want"""
     if len(log_file.split('/')) == 1:
-        #print("log_file given: ", log_file)
+        # print("log_file given: ", log_file)
+        if len(log_file.split('.')) == 3:
+            log_file = log_file.split('.')
+            log_file = '.'.join(log_file[1:3])
         log_file = str(project_dir.joinpath('log', log_file))
+        # print("log path calc: ", log_file)
     else:
         pass
     #print("log_file: ", log_file)

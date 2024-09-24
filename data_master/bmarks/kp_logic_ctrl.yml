@@ -1,14 +1,14 @@
-
-# types of 
+# types of
 work:
-  - dump_group_entries
+  #- dump_group_entries
   # next are dependent on dump_group_entries
   #- loop_sandbox
-  - loop_unknown
+  # - loop_unknown
   #- loop_sandbox_drop_from_old
-  - loop_unknown_drop_from_old
+  # - loop_unknown_drop_from_old
   # - loop_crit
   #- loop_hostspecific
+  #- allgroups_old_match
 
   # independent
   - loop_copyall
@@ -20,15 +20,11 @@ work:
 
 # For devel mostly, steps of loop_crit
 step_do:
+step_skip:
   - generate_wanted_table
   - match_by_serverlist_tags
   - calc_and_update_title_and_username
-step_skip:
   - DUMMY
-outdated:
-  - compare_serverlist_tags
-  - compare_wanted
-  - update_matching_entries
 
 drop_sig: False
 drop_for_output: True
@@ -38,30 +34,17 @@ loop_crit:
   - to-sort
   - psy
   - segeln
-  # - Weblogic
-  #- DB
-
 loop_hostspecific:
   - uber
 
 # with subgroups
 loop_copyall_rec:
-  - jobs
-  - job
-
+  - menu/jobs
+  - menu/to-sort
+  - toolbar/job
+  - toolbar/HD
 # without subgroups
 loop_copyall:
-  - sound_creation
-
-##### tests
-# sort existing into all {ger}
-test:
-  DB:
-    # items is here username_old
-    items:
-      - eip
-      - eip_svc
-      - "$behoerde prd_admin"
-    map:
-      db.password: 
+  - toolbar/sound_creation
+  - toolbar/IT docs
 
