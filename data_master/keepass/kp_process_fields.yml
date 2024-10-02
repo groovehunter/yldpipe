@@ -110,6 +110,7 @@ debug_w_table:
 
 xlsx_framedumps:
   #  old_entries:
+  merged:
   debug:
   wanted:
   progress_wanted:

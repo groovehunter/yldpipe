@@ -183,15 +183,14 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
         df = pd.DataFrame(columns=self.frame_fields['progress_sm_table'])
         # if transform:
         # syntax from transformFunc ?? not needed i think
-        c, rc_suc, rc_err = 0,0,0
-        attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
+        self.stats_init()
+        attrs = self.cfg_kp_process_fields['kp_pure_fields'] + self.cfg_kp_process_fields['kp_same_fields']
 
-        # XXX use stats from KeepassBase
-        #logger.debug('entries count: %s', len(group_src.entries))
+        logger.debug('entries count: %s', len(group_src.entries))
         # XXX use dataframe to update the table
-        #for entry in group_src.entries:
-        logger.debug('entries count: %s', len(group_src.children))
-        for entry in group_src.children:
+        for entry in group_src.entries:
+        #logger.debug('entries count: %s', len(group_src.children))
+        #for entry in group_src.children:
             row = {}
             for attr in attrs:
                 attr_value = getattr(entry, attr)
@@ -204,16 +203,16 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
                 self.kp_dst.add_entry(group_dst, row)
                 row['status'] = 'OK: Entry copied'
                 # logger.debug('OK entry copied: %s | %s', entry.title, entry.username)
-                rc_suc += 1
+                self.count_suc += 1
             except:
                 row['status'] = 'ERROR: Entry not copied'
                 logger.error(row)
-                rc_err += 1
+                self.count_err += 1
             ldf = len(df)
             df.loc[ldf] = row
-            c += 1
+            self.count += 1
 
-        logger.debug('copied successful %s entries, failed %s entries', rc_suc, rc_err)
+        self.stats_report(name='copyall')
 
 
     def groups_map_new_to_old(self, group_name_new):

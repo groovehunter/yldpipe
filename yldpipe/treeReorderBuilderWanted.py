@@ -42,8 +42,9 @@ class TreeReorderBuilderWanted:
         for entry in entries:
             row = {}
             row['status'] = 'UNTOUCHED'
-            logger.debug('entry title: %s', entry.title)
-            row = self.check_entry_for_prominent_terms(entry, row)
+            #logger.debug('entry title: %s', entry.title)
+            if not 'check_entry_for_prominent_terms' in self.cfg_kp_logic_ctrl['step_skip']:
+                row = self.check_entry_for_prominent_terms(entry, row)
             # logger.debug('row: %s', row)
             # XXX can check_entry_for_prominent_terms be after the old val assertion?
             # logger.debug('row: %s', row)
@@ -71,9 +72,9 @@ class TreeReorderBuilderWanted:
         """
         # XXX make this much more specific, which fields should be searched in for a value
         # instead of search all everywhere, this is an extra option as last resort
-        fv = self.cfg_kp_term_attr_logic['field_variations']
-        fs = self.cfg_kp_term_attr_logic['field_search']
-        fsi = self.cfg_kp_term_attr_logic['field_search_spec']
+        field_variations = self.cfg_kp_term_attr_logic['field_variations']
+        field_search= self.cfg_kp_term_attr_logic['field_search']
+        field_search_spec = self.cfg_kp_term_attr_logic['field_search_spec']
 
         age_sig = {
             'hostname': None,
@@ -82,14 +83,14 @@ class TreeReorderBuilderWanted:
             'crit': None,
             'behoerde': None,
         }
-        logger.debug('entry: %s', entry)
-        for key, item in fsi.items():
+        logger.debug('group: %s - entry: %s', 'see log-2', entry)
+
+        for key, item in field_search_spec.items():
             # lg.debug('item: %s', item)
             method, argu = next(iter(item['how'].items()))
             # logger.debug('method: %s, argu: %s', method, argu)
             if method == 're':
                 cpat = re.compile(argu)
-                #val = getattr(entry, 'username')
                 val = getattr(entry, item['where'])
                 if val is None:
                     val = ''
@@ -99,12 +100,14 @@ class TreeReorderBuilderWanted:
                     # logger.debug('val: %s, m: %s', val, m)
                     age_sig[item['finds']] = m[0]
 
-        for attr in self.cfg_kp_process_fields['kp_pure_fields']:
+
+        for attr in self.cfg_kp_process_fields['kp_pure_fields']+self.cfg_kp_process_fields['kp_same_fields']:
+
             text = str(getattr(entry, attr))
             logger.debug('attr: %s - text: %s', attr, text)
             if text is None or text=='':
                 continue
-            for fv_key, fv_item in fv.items():
+            for fv_key, fv_item in field_variations.items():
                 for aspect_key, aspect_item in fv_item.items():
                     all_vars = [aspect_key] + aspect_item
                     for term in all_vars:
@@ -117,7 +120,8 @@ class TreeReorderBuilderWanted:
                             if age_sig[fv_key] is None:
                                 age_sig[fv_key] = term
                             age_sig[fv_key] = aspect_key
-            for fs_key, fs_item in fs.items():
+
+            for fs_key, fs_item in field_search.items():
                 # logger.debug('fs_key: %s, fs_item: %s', fs_key, fs_item)
                 for aspect_key, aspect_item in fs_item.items():
                     m = None
@@ -133,16 +137,16 @@ class TreeReorderBuilderWanted:
                             if m:
                                 # lg.debug('text: %s, m: %s', text, m)
                                 age_sig[fs_key] = aspect_key
-                                if 'mark' in fs[fs_key].keys():
-                                    # logger.debug('== mark: %s', fs[fs_key]['mark'])
-                                    row['status'] = fs[fs_key]['mark']
-                                if 'modify' in fs[fs_key].keys():
+                                if 'mark' in field_search[fs_key].keys():
+                                    # logger.debug('== mark: %s', field_search[fs_key]['mark'])
+                                    row['status'] = field_search[fs_key]['mark']
+                                if 'modify' in field_search[fs_key].keys():
                                     # XXX make easier and clearer
-                                    val = list(fs[fs_key]['modify'].values())[0]
-                                    kk = list(fs[fs_key]['modify'].keys())[0]
+                                    val = list(field_search[fs_key]['modify'].values())[0]
+                                    kk = list(field_search[fs_key]['modify'].keys())[0]
                                     # logger.debug('fs_key: %s, key: %s, val: %s', fs_key, kk, val)
-                                    age_sig[list(fs[fs_key]['modify'].keys())[0]] = val
-                                    #row['sig_' + list(fs[fs_key]['modify'].keys())[0]] = list(fs[fs_key]['modify'].values())[0]
+                                    age_sig[list(field_search[fs_key]['modify'].keys())[0]] = val
+                                    #row['sig_' + list(field_search[fs_key]['modify'].keys())[0]] = list(field_search[fs_key]['modify'].values())[0]
 
         logger.debug('age_sig: %s', age_sig)
         result = {}
@@ -153,6 +157,7 @@ class TreeReorderBuilderWanted:
             #if key == 'item':
             #    result['item'] = d_item
         row.update( result )
+        logger.debug('row: %s', row)
         return row  #age_sig
 
     def allgroups_old_match(self, group_list):
@@ -171,7 +176,7 @@ class TreeReorderBuilderWanted:
             group_name_old = self.groups_map_new_to_old(group_name_new)
             group_obj_old = self.kp_src.find_groups_by_path(group_name_old, use_default_group=True)
             group_logic = self.cfg_kp_wanted_logic[group_name_new]
-            lg.debug('group_logic: %s', group_logic)
+            # lg.debug('group_logic: %s', group_logic)
 
             if group_logic.get('case_1') is not None:
                 # There are multiple cases to be handled

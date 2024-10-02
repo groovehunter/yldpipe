@@ -128,7 +128,7 @@ class AnytreeStorage(AbstractStorage):
             if not hasattr(node, 'entries'):
                 node.entries = []
             node.entries.append(row)
-            logger.debug('node.entries: %s', node.entries)
+            # logger.debug('node.entries: %s', node.entries)
 
 
     # unused currently
