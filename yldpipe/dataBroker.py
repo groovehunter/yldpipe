@@ -1,6 +1,6 @@
 # from config_loader import ConfigLoader
 from YamlConfigSupport import YamlConfigSupport
-from common import data_master
+from common import data_in
 from utils import setup_logger
 import logging
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
@@ -13,8 +13,17 @@ from yamlReader import YamlReader, YamlStorage
 from yamlWriter import YamlWriter
 from jsonReader import JsonReader, JsonStorage
 from jsonWriter import JsonWriter
+from kdbxStorage import KdbxStorage
+
+from SICache import SICache, MetadataSearch
+
+
+class APIbroker:
+    pass
 
 class DataBroker(YamlConfigSupport):
+
+
 
     def class_factory(self, class_name, rw):
         if rw == 'r':
@@ -23,8 +32,12 @@ class DataBroker(YamlConfigSupport):
             class_name = class_name+'Writer'
         elif rw == 's':
             class_name = class_name+'Storage'
+        else:
+            pass
         # define mapping in config XXX
         classes = {
+            'SICache': SICache,
+            'MetadataSearch': MetadataSearch,
             'excelReader': ExcelReader,
             'csvReader': CsvReader,
             'excelWriter': ExcelWriter,
@@ -36,6 +49,7 @@ class DataBroker(YamlConfigSupport):
             'jsonReader': JsonReader,
             'jsonWriter': JsonWriter,
             'jsonStorage': JsonStorage,
+            'kdbxStorage': KdbxStorage,
         }
         return classes[class_name]()
 
@@ -59,17 +73,20 @@ class DataBroker(YamlConfigSupport):
 
 
 
+# dont make dependency to DataBroker
+# we use the class as a member of the main logic class tree
+
+"""
 class ExcelCache(DataBroker):
-    """ class for caching """
 
     def __init__(self):
         pass
 
 
     def init_cache(self):
-        logger.debug('self.cfg_profile: %s', self.cfg_profile)
         self.init_reader_class()
-        self.reader.setatt(cfg_si=self.cfg_si,
-                           sub=self.cfg_profile['sub_in'])
+        self.reader.setatt(cfg_si=self.cfg_si)
+        self.reader.set_src_dir(data_in.joinpath(self.sub))
         self.reader.init_reader()
+"""
 

@@ -1,11 +1,5 @@
 # MAIN datapipeline configuration file
 
-# profile: excel_copy
-# profile: split_duckdb_to_csv
-# profile: excel_split_first
-#profile: ex2ansible
-profile: treemod_bmarks
-
 default_profile:
   # mode is (si_split|si_1to1|ex2an)
   mode: si_split
@@ -19,6 +13,14 @@ default_profile:
   fnames_src: data
   fnames_dst: config
 
+wanted_bmarks_eip:
+  storage_src: json
+  storage_dst: json
+  writer: excel
+  sub: bmarks_eip
+  sub_in: bmarks_eip
+  sub_out: bmarks_eip
+
 treemod_bmarks:
   reader: excel  # not used, but why not use reader for the src json??
   writer: excel
@@ -29,6 +31,8 @@ treemod_bmarks:
   sub_out: bmarks
 
 keepass_build:
+  storage_src: kdbx
+  storage_dst: kdbx
   reader: excel
   writer: excel
   sub: keepass

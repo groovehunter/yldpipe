@@ -6,6 +6,8 @@ except:
 from time import sleep
 from utils import setup_logger
 import logging
+# maybe try to avoid dependency on common
+from common import data_in
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
 lg = setup_logger(__name__+'_2', __name__+'_2.log')
 
@@ -54,6 +56,7 @@ class FrameIOandCacheSupport(DataBroker):
 
     def init_r(self, tkeys):
         self.reader = self.init_reader_class()
+        self.reader.set_src_dir(data_in.joinpath(self.sub))
 
     def init_w(self, tkeys):
         self.writer = self.init_writer_class()
@@ -76,7 +79,7 @@ class FrameIOandCacheSupport(DataBroker):
                 # XXX os.remove here?
                 # lg.debug('prep writer for %s', tkey)
                 self.writer_d[tkey].set_outfiles(self.buffer_names_d[tkey].keys())
-                self.writer_d[tkey].set_dstfn(self.root_path+'/out_'+tkey+'.xlsx')
+                self.writer_d[tkey].set_dst(self.root_path+'/out_'+tkey)
                 # lg.debug('buffer_names_d[%s].keys(): %s', tkey, self.buffer_names_d[tkey].keys())
                 for name in self.buffer_names_d[tkey].keys():
                     lg.debug('set buffer len=%s for %s', len(self.df_d[tkey[name]]), name)

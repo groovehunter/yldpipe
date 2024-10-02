@@ -1,0 +1,62 @@
+DB:
+  ArbG:
+  SozG:
+  FinG:
+  FachG:
+  Spielwiese:
+Weblogic:
+  ArbG:
+  SozG:
+  FinG:
+  eKP:
+  Spielwiese:
+Alfresco_Solr:
+  ArbG:
+  FinG:
+  SozG:
+  Spielwiese:
+DMS-Cache:
+  ArbG:
+  FinG:
+  SozG:
+  Spielwiese:
+###################
+Monitoring:
+  CheckMK:
+PKI:
+eKP-FH:
+  FachG:
+  Spielwiese:
+EGVP-E:
+  FachG:
+  Spielwiese:
+eIP-AdminUI:
+  ArbG:
+  SozG:
+  FinG:
+  Spielwiese:
+Dev:
+  Test:
+  Sandbox:
+Sonstiges:
+  Citrix:
+  Linux:
+  Java:
+  SecureBox:
+  Ansible:
+  URL:
+  Archiv-Abgelaufene PW:
+  opentext:
+Windows:
+  SQL-Server:
+  Rendition-Server:
+  Management:
+  Captiva-Server:
+  Scanclient:
+TODO:
+Archiv:
+  Linux:
+  Weblogic:
+  Alfresco:
+  DMS-Cache:
+Recycle Bin:

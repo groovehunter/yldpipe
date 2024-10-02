@@ -1,0 +1,11 @@
+# path_map_true:
+# path items - NO Slash allowed!
+
+DB:
+Linux: 'Sonstiges/Linux'
+Weblogic: Weblogic
+Monitoring:
+Alfresco: 'Alfresco_Solr'
+eIP: eIP
+SQL-Server:
+Rendition-Server:

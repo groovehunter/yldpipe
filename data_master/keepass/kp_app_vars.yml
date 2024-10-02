@@ -1,0 +1,20 @@
+# credentials for apps, name conventions and patterns read by keepass up to now
+
+Common:
+  - ssl.keystore_password
+
+Alfresco_Solr:
+  - alfresco.password
+  - db.password
+  - ssl.keystore_password
+  - ssl.truststore_password
+
+DMS-Cache:
+  - ssl.dms_truststore_password
+  - encryption.secret_key
+  - encryption.encstorepass
+  - encryption.keystore_password
+
+
+not_yet:
+  Weblogic:

@@ -1,18 +1,13 @@
 import logging
 import pandas as pd
-from common import data_out
-from utils import setup_logger
+from utils import setup_logger, safe_fn
 from fileBase import FileBase
-from AbstractBase import AbstractWriter
+from baseWriter import BaseWriter
 
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
 
-def safe_fn(unsafe_str):
-    safe = unsafe_str.replace(' ', '_')
-    safe = safe.replace('/', '__')
-    return safe
 
-class ExcelWriter(AbstractWriter, FileBase):
+class ExcelWriter(BaseWriter, FileBase):
     """ handles a set of destination files, writes to excel"""
     writer = None
 
@@ -22,31 +17,14 @@ class ExcelWriter(AbstractWriter, FileBase):
         self.buffer = {}
         self.out_fns = []
 
+    def set_dst(self, dst):
+        # logger.debug("setting dst to %s", dst)
+        self.dst = dst
+
     def init_writer_all(self):
-        #self.dstfn = data_out.joinpath(self.sub, self.cfg_si['out_SI']) #  too statically set the output file
         # for Excel there is only one dest file
-        self.writer = pd.ExcelWriter(self.dstfn, engine='xlsxwriter')
-        logger.debug("init writer for %s",  self.dstfn)
-
-    def init_writer(self, out_fn):
-        pass
-
-    def set_dstfn(self, dstfn):
-        self.dstfn = dstfn
-
-    def set_outfiles(self, out_fns):
-        #self.out_fns = [ safe_fn(fn) for fn in out_fns ]
-        self.out_fns = out_fns
-        logger.debug("self.out_fns : %s", self.out_fns)
-
-    def writerow(self, row):
-        pass
-        # not possible
-
-    def set_buffer(self, fn, buffer):
-        logger.debug("setting buffer with len %d for %s ", len(buffer), fn)
-        self.buffer[fn] = buffer
-        # logger.debug("cols buffer[%s] : %s", fn, self.buffer[fn].columns)
+        self.writer = pd.ExcelWriter(self.dst+'.xlsx', engine='xlsxwriter')
+        logger.debug("init writer for %s",  self.dst)
 
     def write(self):
         logger.debug("self.out_fns : %s", self.out_fns)

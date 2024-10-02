@@ -1,6 +1,6 @@
 import logging
 import csv
-from AbstractBase import AbstractReader
+from baseReader import BaseReader
 import pandas as pd
 from utils import setup_logger
 from common import data_in
@@ -10,7 +10,7 @@ logger = setup_logger(__name__, logfn, level=logging.DEBUG)
 DELIM_IN = ','
 
 
-class CsvReader(AbstractReader):
+class CsvReader(BaseReader):
     """ access a set of files as input """
     cfg_si = {}
     reader = {}
@@ -36,8 +36,6 @@ class CsvReader(AbstractReader):
         for fn in self.cfg_si['out_fns']:
             self.read(fn)
 
-    def get_buffer(self, fn):
-        return self.buffer[fn]
 
 
 class CsvOrigReader(CsvReader):

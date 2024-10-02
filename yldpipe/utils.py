@@ -31,6 +31,11 @@ def log_class_mro(cls):
     logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
     logger.debug("Class MRO for %s: %s", cls.__name__, ' -> '.join([c.__name__ for c in mro]))
 
+def safe_fn(unsafe_str):
+    safe = unsafe_str.replace(' ', '_')
+    safe = safe.replace('/', '__')
+    return safe
+
 if __name__ == '__main__':
     from treeReorderBuilder import treeReorderBuilder
     log_class_mro(treeReorderBuilder)

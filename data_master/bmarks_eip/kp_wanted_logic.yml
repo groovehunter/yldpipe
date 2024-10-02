@@ -1,0 +1,65 @@
+#
+sort:
+  any: app
+
+# == kp_si_fields ! XXX delete here when no usage
+role_index_pat: "${app}_${behoerde}_${crit}_${sig_item}"
+
+Alfresco:
+  app: eIP
+  dst:
+  sub_all: [Prod, Vorprod]
+  use_subgroups: True
+  age: "eIP_${behoerde}_${crit}"
+  role_prefix: eIP_
+  loop_gericht: True
+  items:
+    - AdminServer
+    - AlfrescoMain
+  map: {}
+  username_new_pat_d:
+    Admin: "admin"
+    Share: "admin"
+  title_new_pat: "${crit}_${item}"
+  uri_new_pat_d: 
+    AdminServer: "https://_host_:8443/alfresco"
+    AlfrescoMain: "https://_host_:8443/"
+
+Solr:
+  app: eIP
+  sub_all: [Prod, Vorprod]
+
+  age: "eIP_${behoerde}_${crit}"
+  role_prefix: eIP_
+  loop_gericht: True
+  items:
+    - Admin
+  map: {}
+  title_new_pat: "${crit}_${item}"
+  uri_new_pat_d: 
+    Admin: "https://_host_:8443/alfresco"
+
+Weblogic:
+  app: eIP
+  dst:
+  sub_all: [Prod, Vorprod]
+  use_subgroups: True
+  age: "eIP_${behoerde}_${crit}"
+  role_prefix: eIP_
+  loop_gericht: True
+  items:
+    - AdminServer
+    - Main
+  map: {}
+  username_new_pat_d:
+    Admin: "weblogic"
+    Operator: "operator"
+  title_new_pat: "${crit}_${item}"
+  uri_new_pat_d:
+    AdminServer: "_host_:20100/weblogic.x.y.de"
+    Main: "_host_:8443/admin/yyy.xx"
+
+  #pattern_title_old: "%s.*Domain.*%s.*%s"
+  pattern_title_old: "$behoerde.*Domain.$crit.*$item"
+  pattern_title_list:
+

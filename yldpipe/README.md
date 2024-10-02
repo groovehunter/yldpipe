@@ -63,3 +63,21 @@ level-order tree durchlauf: Erst den erstenlevel durch; bei jedem node schauen o
 
 
 
+## sort of work
+
+A) just create wanted results from wanted_items 
+
+B) use existing and process
+
+	1. tree structure 
+       copy (rec)  
+       map old to new and vv.  
+ 
+C) entries of nodes
+		copy
+		match wanted against existing
+ 
+D) transform 
+    yes
+    just raw
+

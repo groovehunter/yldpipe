@@ -65,7 +65,7 @@ class DataPipeline(DataBroker):
         self.writer.setatt(cfg_si=self.cfg_si,
                            config_dir=self.config_dir,
                            sub=self.sub)
-        self.writer.set_dstfn(self.cfg_si['out_SI'])
+        self.writer.set_dst(self.cfg_si['out_SI'])
         self.writer.init_writer_all()
 
         # WORK

@@ -1,0 +1,45 @@
+# types of
+work:
+  # - dump_group_entries
+  # next are dependent on dump_group_entries
+  #- loop_sandbox
+  # - loop_unknown
+  #- loop_sandbox_drop_from_old
+  # - loop_unknown_drop_from_old
+  - loop_crit
+  #- loop_hostspecific
+  #- allgroups_old_match
+
+  # independent
+  # - loop_copyall
+  # - loop_copyall_rec
+  - write_all
+  - open_files
+  # - add_age_to_tree
+  - save_tree
+
+# For devel mostly, steps of loop_crit
+step_do:
+  - generate_wanted_table
+step_skip:
+  - group_match_by_serverlist_tags
+  - calc_and_update_title_and_username
+  - insert_into_tree
+  - DUMMY
+
+drop_sig: False
+drop_for_output: True
+
+###################
+# XXX rename to loop_term1 or kind of
+loop_crit:
+  - Weblogic
+  - Alfresco
+  - Solr
+loop_hostspecific: []
+
+# with subgroups
+loop_copyall_rec: []
+# without subgroups
+loop_copyall: []
+

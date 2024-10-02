@@ -1,10 +1,6 @@
 import pandas as pd
 import re
 import string
-import itertools
-from collections import namedtuple
-from random import randint
-
 
 from utils import setup_logger
 import logging
@@ -35,10 +31,10 @@ class TreeReorderBuilderWanted:
     def dump_group_entries(self, group_name_old, group_name_new):
         lg.debug('Entering. group_name_old: %s, group_name_new: %s', group_name_old, group_name_new)
         group_obj_old = self.kp_src.find_groups_by_path(group_name_old)
-        # lg.debug('DUMPING group_obj_old: %s', group_obj_old)
+        lg.debug('DUMPING group_obj_old: %s', group_obj_old)
         entry_attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
-        # entries = group_obj_old.entries
-        entries = group_obj_old.children
+        entries = group_obj_old.entries
+        #entries = group_obj_old.children
         # logger.debug('entries: %s', entries[:5])
         lg.debug('len entries: %s', len(entries))
         df_entries = pd.DataFrame(columns=self.frame_fields['entries_old_table'])
@@ -82,8 +78,11 @@ class TreeReorderBuilderWanted:
         age_sig = {
             'hostname': None,
             'item': None,
+            'app': None,
+            'crit': None,
+            'behoerde': None,
         }
-        # logger.debug('entry: %s', entry)
+        logger.debug('entry: %s', entry)
         for key, item in fsi.items():
             # lg.debug('item: %s', item)
             method, argu = next(iter(item['how'].items()))
@@ -100,7 +99,7 @@ class TreeReorderBuilderWanted:
                     # logger.debug('val: %s, m: %s', val, m)
                     age_sig[item['finds']] = m[0]
 
-        for attr in ['title', 'uri']: #, 'dateAdded']:
+        for attr in self.cfg_kp_process_fields['kp_pure_fields']:
             text = str(getattr(entry, attr))
             logger.debug('attr: %s - text: %s', attr, text)
             if text is None or text=='':
@@ -170,8 +169,9 @@ class TreeReorderBuilderWanted:
         for group_name_new in groups_new:
             lg.debug('group_name_new: %s', group_name_new)
             group_name_old = self.groups_map_new_to_old(group_name_new)
-            group_obj_old = self.kp_src.find_groups_by_path([group_name_old])
+            group_obj_old = self.kp_src.find_groups_by_path(group_name_old, use_default_group=True)
             group_logic = self.cfg_kp_wanted_logic[group_name_new]
+            lg.debug('group_logic: %s', group_logic)
 
             if group_logic.get('case_1') is not None:
                 # There are multiple cases to be handled
@@ -193,6 +193,9 @@ class TreeReorderBuilderWanted:
                 # XXX SAME HERE
                 self.group_generate_wanted_table(group_obj_old, group_name_new, case_name, group_logic)
                 #self.group_wanted_main_workflow(group_name_old, group_name_new, case_name, group_logic)
+                lg.debug('step_skip: %s', step_skip)
+                res= 'group_match_by_serverlist_tags' in step_skip
+                lg.debug('res: %s', res)
                 if not 'group_match_by_serverlist_tags' in step_skip:
                     self.group_match_by_serverlist_tags(group_obj_old.name, group_name_new, case_name, group_logic)
                 if not 'calc_and_update_title_and_username' in step_skip:
@@ -247,7 +250,7 @@ class TreeReorderBuilderWanted:
         self.stats_init()
         items = group_logic.get('items')
         itemmap = group_logic.get('map')
-        hostname_list = self.get_hosts_all()
+        hostname_list = self.broker.call_method('get_all_of_x', 'hostname')
         lvlrow = {
             'group_new': group_name_new,
             'group_path_new': [group_name_new],
@@ -285,7 +288,7 @@ class TreeReorderBuilderWanted:
 
         items = group_logic.get('items')
         # lg.debug('items: %s', items)
-        itemmap = group_logic.get('map')
+        itemmap = group_logic.get('map') #get or {}
         app = group_logic.get('app')
         dst = group_logic.get('dst')
         group_path_new = [group_name_new]
@@ -311,15 +314,18 @@ class TreeReorderBuilderWanted:
                     # logger.debug('sub: %s', sub)
                     roledict = {'app': app, 'behoerde': behoerde, 'crit': crit}
                     role = age_template.substitute(roledict)
-                    hostname_list = self.get_hosts_for_app(role)
+                    hostname_list = self.broker.call_method('get_data_for_one', {'role':role})
                     row['hostname_list'] = hostname_list
                     row['behoerde'] = sub  # XXX use behoerde here
                     row['item'] = item
-                    row['mapped'] = itemmap[item]
+                    row['mapped'] = itemmap.get(item, item)
                     row['fk'] = self.count
                     #row['title_new'] = '%s %s' % (crit, item)
                     title_new_pat = group_logic['title_new_pat']
                     row['title_new'] = string.Template(title_new_pat).substitute(row)
+                    # for bmarks_eip
+                    #uri_new_pat_d = group_logic['uri_new_pat_d']
+                    #row['uri_new'] = string.Template(uri_new_pat_d[item]).substitute(row)
                     if group_logic.get('use_subgroups', None):
                         group_path_new = [group_name_new, sub]
                     else:
@@ -354,7 +360,7 @@ class TreeReorderBuilderWanted:
         # logger.debug('all_defined: %s', all_defined)
         if all_defined == True:
             role_index = "%s_%s_%s_%s" % ( row[req_fields[0]], row[req_fields[1]], row[req_fields[2]], row[item_key])
-            logger.debug('role_index set to : %s ============', role_index)
+            #logger.debug('role_index set to : %s ============', role_index)
             return role_index
         # if not all parts are defined the role_index should be empty string
         else:

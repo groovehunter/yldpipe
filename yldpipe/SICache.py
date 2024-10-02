@@ -1,14 +1,49 @@
-from dataBroker import ExcelCache
+#from dataBroker import ExcelCache
 
 from utils import setup_logger
 import logging
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
 
-class SICache(ExcelCache):
+class ExternalDataInterface:
+    def set_reader(self, reader):
+        pass
+    def call_method(self, method, *args):
+        return self.mapping[method](*args)
+
+
+class MetadataSearch(ExternalDataInterface):
+    def __init__(self):
+        self.mapping = {
+            'get_data_for_one': self.get_metadata_for_url,
+            'get_all_of_x': self.get_all_topics
+        }
+
+    def get_metadata_for_url(self, url):
+        return {}
+
+    def get_all_topics(self, domain):
+        # lookup all entries of column <domain> in metadata
+        return []
+
+
+# XXX XXX BIG!
+# refactor this to subclass from ExcelReader
+class SICache(ExternalDataInterface):  #(ExcelCache):
+    def __init__(self):
+        self.mapping = {
+            'get_data_for_one': self.get_hosts_for_app,
+            'get_all_of_x': self.get_hosts_all
+        }
+        self.si_data = None
+
+    def set_reader(self, reader):
+        self.reader = reader
+
     def cache_si_data(self):
         # XXX cleanup methdods and members
-        self.reader.setatt(cfg_si=self.cfg_si,
-                           sub=self.cfg_profile['sub_in'])
+
+        self.reader.setatt(cfg_si=self.cfg_si)
+        self.reader.set_src_dir(self.cfg_si['data_in'].joinpath('SI'))
         self.reader.init_reader()
 
         logger.debug('self.cfg_si: %s', self.cfg_si)

@@ -1,0 +1,15 @@
+
+DB:
+  app: eIP-Alf
+  sub_all: [Alfresco]
+  use_subgroups: True
+  dst: alfresco
+  age: "eIP-Alf_${behoerde}_${crit}"
+  loop_gericht: False
+  items:
+    - serviceuser
+  map:
+    serviceuser: "Serviceuser.* $hostname"
+  title_new_pat: "Serviceuser_$behoerde_$crit"
+  username_new_pat_d:
+    serviceuser: "alf_svc"

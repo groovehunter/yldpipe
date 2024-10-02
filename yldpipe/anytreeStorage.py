@@ -40,9 +40,19 @@ class CustomNode(Node):
         logger.debug('subgroups: %s', sgroups)
         return sgroups
 
+    @property
+    def title(self):
+        if hasattr(self, 'name'):
+            return self.name
+        return self.title
+    @title.setter
+    def title(self, val):
+        self.name = val
 
 class AnytreeStorage(AbstractStorage):
     """ class for anytree storage """
+    root_node = None
+    use_default_group = False
 
     # find by name and typeCode
     # find by mypath
@@ -57,8 +67,19 @@ class AnytreeStorage(AbstractStorage):
             out = res.name
         else:
             out = None
-        # logger.debug('FIND: In %s val: %s - res: %s', self.__class__.__name__, val, out)
+            if self.use_default_group:
+                res = self.root_node
+                out = res.name
+        logger.debug('FIND: In %s val: %s - res: %s', self.__class__.__name__, val, out)
         return res
+
+    def load_hierarchy(self, path):
+        pass
+
+    def load_hierarchy_from_yaml(self, fp):
+        with open(fp) as file:
+            self.yaml = yaml.load(file, Loader=yaml.FullLoader)
+
 
     def _import(self):
         self.root = self.importer.import_(self.yaml)
@@ -67,12 +88,18 @@ class AnytreeStorage(AbstractStorage):
             logger.debug('node.title: %s', node.title)
         logger.debug('root children: %s', self.root.children)
 
+
+    def prepare_export(self, fp, format='yaml'):
+        pass
+
     def export(self, fp, format='yaml'):
+        self.prepare_export(fp, format=format)
 
         if format == 'pure_hierarchy':
             data = {}
             for node in PreOrderIter(self.root_node):
-                lg.debug('node: %s', node.name)
+                pass
+                # logger.debug('node: %s', node.name)
                 # XXX
                 # write yaml with identions bsaed on
             #attriter=lambda attrs: [(k, v) for k, v in attrs if k == "name"]
@@ -115,3 +142,39 @@ class AnytreeStorage(AbstractStorage):
 
     def save(self):
         self.write()
+
+    def write(self):
+        pass
+
+    def create_tree_from_json(self, attrs):
+        pass
+
+    def create_tree_from_yaml(self, attrs):
+        """ create a tree from a yaml """
+        # if root is given in data, use it, else create a root node
+        #root.mypath = 'root'
+        self.attrs = attrs
+        self.rec_yaml(yaml, self.root_node)
+        self.render()
+
+    def rec_yaml(self, data, node):
+        """ recurse nested dict (ie from yaml) and add all content as tree descendants """
+        #logger.debug("enter recursion with node name %s, path=%s", node.name, node.mypath)
+        #if data:
+        #logger.debug('data: %s', data)
+        # [ setattr(node, attr, data.get(attr, None)) for attr in self.attrs ]
+
+        if isinstance(data, dict):
+            for attr in self.attrs:
+                setattr(node, attr, data.get(attr, None))
+            for key, item in data.items():
+                #logger.debug('key: %s, item: %s', key, item)
+                child_node = CustomNode(key, parent=node)
+                child_node.title = key
+                # logger.debug('child_node: %s', child_node.name)
+                self.rec_yaml(item, child_node)
+        else:
+            pass
+
+    def create_tree_from_kdbx(self):
+        pass

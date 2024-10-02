@@ -25,8 +25,8 @@ class JsonWriter(AbstractWriter, ConfigLoader):
             self.init_writer(out_fn, c)
             c += 1
 
-    def set_dstfn(self, dstfn):
-        """ one dstfn makes only sense for Excel """
+    def set_dst(self, dstfn):
+        """ one dst makes only sense for Excel """
         pass
 
     def init_writer(self, fn, c):

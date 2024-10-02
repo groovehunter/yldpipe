@@ -1,0 +1,32 @@
+keep_dir_rec:
+Windows: 
+  SQL-Server:
+  Rendition-Server:
+  Management:
+  Captiva-Server:
+  Scanclient:
+
+
+DB:
+Linux: ['Sonstiges', 'Linux']
+Weblogic:
+Monitoring:
+Alfresco: ['Alfresco_Solr']
+PKI:
+Lizenzen:
+DMS-Cache:
+Citrix:     ['Sonstiges', 'Citrix']
+Java:       ['Sonstiges', 'Java']
+opentext:   ['Sonstiges', 'opentext']
+URL:        ['Sonstiges', 'URL']
+Ansible:    ['Sonstiges', 'Ansible']
+SecureBox:  ['Sonstiges', 'SecureBox']
+eKP: ['eKP-FH']
+#EGVP: ["EGVP-E"]
+EGVP:
+eIP: ["eIP-AdminUI"]
+Archiv-Abgelaufene PW: ['Sonstiges', 'Archiv-Abgelaufene PW']
+Recycle Bin:
+# SQL-Server vm02581:
+# PKI Testzertifikate:
+# Neue Gruppe:

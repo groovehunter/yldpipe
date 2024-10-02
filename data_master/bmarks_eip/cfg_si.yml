@@ -1,0 +1,25 @@
+profile_name: wanted_bmarks_eip
+
+db_src: bookmarks.json
+use_default_group: True
+db_dst: bookmarks.json
+# XXX get storage format from extensions here??
+
+tree_original_export_fn: tree_original_export.yml
+
+# the config sub? waht did i think to put here?
+# just for reader and writer to get as param? stupidddd
+# src_dir: '/srv'
+
+external_data_class: MetadataSearch
+in_fns:
+  - Tabelle1
+# was list, need final path name, file or src_dir 
+in_SI: Leer.xlsx
+# out_fns:
+
+
+db_file_dst: eip_NG.yml
+db_file_empty: eip_NG_empty.yml
+
+pw_dst: test

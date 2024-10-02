@@ -7,13 +7,12 @@ from treeReorderBuilderBase import TreeReorderBuilderBase
 from treeReorderBuilderWanted import TreeReorderBuilderWanted
 from transformFunc import TransformFunc
 from SICache import SICache
-from common import data_master
 from utils import setup_logger
 import logging
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
 lg = setup_logger(__name__+'_2', __name__+'_2.log')
 from creds import db_path, pw
-from common import is_windows, data_out
+from common import is_windows, data_out, data_master, data_in
 from random import randint
 
 if is_windows:
@@ -23,29 +22,38 @@ if is_windows:
         pass
 
 class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderBuilderBase,
-                         FrameIOandCacheSupport, TransformFunc, SICache):
+                         FrameIOandCacheSupport, TransformFunc):
 
-    def __init__(self):
-        self.sub = 'bmarks/'
+    def __init__(self, app):
+        self.app = app
+        self.sub = app + '/'
+        # XXX move to start of init_framecache
         FrameIOandCacheSupport.__init__(self)
         TreeReorderBase.__init__(self)
         # self.config_dir = data_master.joinpath('keepass')
         self.buffer_names = {}
-        # XXX not needed up to now
-        SICache.__init__(self)
 
         # legacy
         # XXX move to KeepassBuilderBase ? IO related
-        self.si_data = None
+        #self.si_data = None # see SICache
 
         self.cache_configs()
-
+        # XXX why here already and separate?
         self.df_d['entries_old'] = {}
         self.buffer_names_d['entries_old'] = {}
 
         self.close_excel()
 
         self.root_path = str(data_out.joinpath(self.sub))
+
+    def init_external_data(self):
+        external_data_class = self.cfg_si.get('external_data_class', None)
+        if external_data_class:
+            self.broker = self.class_factory(external_data_class, 'literal')
+            self.broker.set_reader(self.reader)
+            # XXX
+            self.cfg_si['data_in'] = data_in
+            setattr(self.broker, 'cfg_si', self.cfg_si)
 
     def init_framecache(self):
         xlsx_groups = [
@@ -60,12 +68,14 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
             # lg.debug('initializing dicts keys=%s for frameIO group: %s', tkeys, group)
             self.init_dfio_dicts(tkeys)
             if not self.cfg_profile['reader'] is None:
-                self.init_r(tkeys)  # not used for this app
+                self.init_r(tkeys)
             if not self.cfg_profile['writer'] is None:
                 self.init_w(tkeys)
             tkeys_d[c] = tkeys
             c += 1
         self.tkeys_d = tkeys_d
+
+        self.init_external_data()
 
         self.prep_writer()
 
@@ -208,7 +218,7 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
 
     def groups_map_new_to_old(self, group_name_new):
         logic_pathmap_backwards = self.cfg_kp_pathmap_backwards.get(group_name_new, None)
-        # lg.debug('logic_pathmap_backwards : %s', logic_pathmap_backwards)
+        lg.debug('logic_pathmap_backwards : %s', logic_pathmap_backwards)
         if logic_pathmap_backwards is None:
             return group_name_new
         if 'old' in logic_pathmap_backwards.keys():

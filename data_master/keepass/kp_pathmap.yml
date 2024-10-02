@@ -1,0 +1,58 @@
+# in DB
+Produktiv: DB
+Pilotierung: DB
+Test: DB
+
+# check 2nd path part
+check:
+  Archiv: reverse_path
+
+### find by name - here unused
+DB:
+Linux:
+Weblogic: Weblogic
+Monitoring:
+Windows: 
+SQL-Server:
+Rendition-Server:
+Management:
+Captiva-Server:
+Scanclient:
+#
+PKI:
+Lizenzen:
+DMS-Cache:
+Citrix:     
+Java:       
+opentext:   
+URL:        
+Ansible:    
+SecureBox: 
+
+### pathmap
+Alfresco: Alfresco_Solr
+eKP: eKP-FH
+FachG Admins: eKP-FH
+EGVP: EGVP-E
+eIP: eIP-AdminUI
+
+
+
+### throw away
+skip:
+  Archiv-Abgelaufene PW:
+  # PKI
+  Abgelaufen:
+  Abbestellt:
+  Gesperrt:
+  
+  Recycle Bin:
+  SQL-Server vm02581:
+  PKI Testzertifikate:
+  Neue Gruppe:
+  vm11054:
+
+  Sandbox:
+
+# PKI Testzertifikate:
+# Neue Gruppe:

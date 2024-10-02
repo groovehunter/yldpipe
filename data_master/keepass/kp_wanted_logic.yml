@@ -1,0 +1,170 @@
+
+attrs_age: [ 'app', 'behoerde', 'crit' ]
+# == kp_si_fields ! XXX delete here when no usage
+role_index_pat: "${app}_${behoerde}_${crit}_${sig_item}"
+#role_index_pat: "${app}_${behoerde}_${crit}_${item}"
+
+# using old group names here?
+map_kpgroup_agekey:
+  #Alfresco_Solr: 'eIP-Alf_'
+  Alfresco: 'eIP-Alf_'
+  DMS-Cache: 'eIP-Alf_'
+  Weblogic: 
+    OR: ['eIP_', 'eKP_', 'EGVPE_']
+
+# all sandbox mark 
+# all unknown mark
+# in compare and match, check result in old-entries table by foreign key or 
+# path_old if marked as invalid, ie. sandbox 
+
+
+PKI:
+  title_pat: "Transport P.*"
+  username_pat: "z.*rz-sued-bayern.de" # regex XXX ? 
+  title_new_pat: "Transport_Pin_${host}"
+  username_new_pat: "${host}"
+
+  prepare_logic:
+    username:
+      re: "z.*rz-sued-bayern.de" 
+    
+  attr_logic:
+    title:
+    username:
+    url:
+      from: username
+    username: url
+
+
+Weblogic:
+  case_1:
+    app: eIP
+    dst: 
+    sub_all: [ArbG, SozG, FinG]
+    use_subgroups: True
+    age: "eIP_${behoerde}_${crit}"
+    role_prefix: eIP_
+    loop_gericht: True
+    items:
+      - Admin
+      - Operator
+      - Keystore
+      - Truststore
+    map:
+      Admin: "$behoerde Domain $crit Admin"
+      Operator: "$behoerde Domain $crit Operator"
+      Keystore: "$behoerde Domain $crit Keystore" 
+      Truststore: "$behoerde Domain $crit Truststore"
+    username_new_pat_d:
+      Admin: "weblogic"
+      Operator: "operator"
+    title_new_pat: "${crit}_${item}"
+    #pattern_title_old: "%s.*Domain.*%s.*%s"
+    pattern_title_old: "$behoerde.*Domain.$crit.*$item"
+    pattern_title_list:
+      - "$behoerde.*Domain.*$crit.*$item"
+      - "$behoerde.*Domain.*$crit.*"
+      - "$behoerde.*Domain.*$item"
+  case_2:
+    app: eKP
+    dst: eKP  # logic prob together with sub_all
+    sub_all: [FachG]
+    age: "eKP_${crit}"
+    loop_gericht: False
+    items:
+      - Admin
+      - Operator
+      - Keystore
+      - Truststore
+    map:
+      Admin:    "eKP Domain $crit Admin"
+      Operator: "eKP Domain $crit Operator"
+      Keystore: "eKP Domain $crit Keystore" 
+      Truststore: "eKP Domain $crit Truststore"
+    username_new_pat_d:
+      Admin: "weblogic"
+    title_new_pat: "${crit}_${item}"
+    #pattern_title_old: "%s.*Domain.*%s.*%s"
+    pattern_title_old: "$behoerde.*Domain.$crit.*$item"
+    pattern_title_list:
+      - "eKP.*Domain.*$crit.*$item"
+      - "eKP.*Domain.*$item"
+
+Alfresco_Solr:
+  case_1:
+    app: eIP-Alf
+    sub_all: [ArbG, SozG, FinG]
+    use_subgroups: True
+    dst: 
+    age: "eIP-Alf_${behoerde}_${crit}"
+    loop_gericht: True
+    items:
+      - Admin
+      - Keystore
+      - Truststore
+    map:
+      Admin: "Adminkennung $hostname"
+      Keystore: "Keystore $hostname"
+      Truststore: "Truststore $hostname"
+    username_new_pat_d:
+      Admin: "admin"
+    title_new_pat: "${crit}_${item}"
+    pattern_title_old: "$item $hostname"
+    pattern_title_list:
+      - "${item} ${hostname}"
+      - "${item} .*"
+  case_2:
+    generate_wanted: False
+    app: eIP-Alf
+    # use_role_index: False
+    sub_all: [serviceuser]
+    use_subgroups: True
+    dst: serviceuser
+    age: "eIP-Alf_${behoerde}_${crit}"
+    loop_gericht: False
+    items:
+      #- serviceuser
+    map:
+      serviceuser: "Serviceuser.* $hostname"
+    title_new_pat: "Serviceuser_$behoerde_$crit"
+    username_new_pat_d:
+      serviceuser: "alf_svc"
+  
+
+DMS-Cache:
+  app: eIP-Alf
+  sub_all: [ArbG, SozG, FinG]
+  use_subgroups: True
+  dst :
+  age: "eIP-Alf_${behoerde}_${crit}"
+  # XXX yet to clarify
+  loop_gericht: True
+  items:
+    - Admin
+    - Truststore
+    - Keystore
+    - Secret_Key
+    - encryption.keystore_password
+    - encryption.encstorepass
+  itemmap_host:
+    Truststore:
+      group_path: ['PKI']
+      title_pat: "Transport P.*"
+      username_pat: "" # XXX first transfer that folder
+  map:
+    Admin: "Admin $hostname" # ?XXX
+    Truststore: "Truststore $hostname"
+    Keystore: "Keystore $hostname"
+    Secret_Key: "Secret Key $hostname"
+    encryption.keystore_password: ""
+    encryption.encstorepass: ""
+  title_new_pat: "${crit}_$item"
+  username_new_pat_d:
+    all:  ""
+    Admin: admin
+
+  
+domain_prefix_map:
+  zrz: rz-sued.bayern.de
+  zff: fachg.bayern.de
+  zdve: todo.bayern.de # XXX

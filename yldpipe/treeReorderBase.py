@@ -18,7 +18,6 @@ lg = setup_logger(__name__+'_2', __name__+'_2.log')
 class TreeReorderBase(DataBroker):  # YamlConfigSupport):
 
     def __init__(self) -> None:
-        self.sub = 'bmarks/'
         self.config_dir = str(data_master.joinpath(self.sub))
         self.config_dir_master = str(data_master)
         self.dt_fn = 'kp_tree_team.yml'
@@ -59,13 +58,19 @@ class TreeReorderBase(DataBroker):  # YamlConfigSupport):
 
     def set_src(self, db_path, pw):
         lg.debug('db_path: %s', db_path)
+        # XXX needed here, this should be set earlier
+        self.cfg_si['data_out_path'] = data_out.joinpath(self.sub)
         self.db_path = db_path
         self.pw = pw
         fp = data_in.joinpath(self.sub, self.cfg_si['db_src'])
         self.kp_src = self.init_storage_src_class()
+        setattr(self.kp_src, 'cfg_si', self.cfg_si)
         self.kp_src.set_src(fp)
+        setattr(self.kp_src, 'use_default_group', self.cfg_si['use_default_group'])
         attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
+        # if not json, unused in base class AnytreeStorage
         self.kp_src.create_tree_from_json(attrs)
+        self.kp_src.create_tree_from_kdbx()
         #self.kp_src._import()
         # export discovered tree to yaml
         fp = data_out.joinpath(self.sub, self.cfg_si['tree_original_export_fn'])
@@ -74,12 +79,15 @@ class TreeReorderBase(DataBroker):  # YamlConfigSupport):
     def set_dst(self):
         fp = data_out.joinpath(self.sub, self.cfg_si['db_dst'])
         self.kp_dst = self.init_storage_dst_class()
+        self.cfg_si['pw'] = 'test'
+        setattr(self.kp_dst, 'cfg_si', self.cfg_si)
         self.kp_dst.set_src(fp)
 
         fp = data_master.joinpath(self.sub, self.dt_fn)
-        self.kp_dst.load_hierarchy_from_yaml(fp)
-        attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
-        self.kp_dst.create_tree_from_yaml(self.kp_dst.yaml, attrs)
+        # if there is a new manually edited hierarchy given from config
+        #self.kp_dst.load_hierarchy_from_yaml(fp)
+        # attrs = self.cfg_kp_process_fields['kp_old_fields'] + self.cfg_kp_process_fields['kp_same_fields']
+        # self.kp_dst.create_tree_from_yaml(self.kp_dst.yaml, attrs)
 
 
     def add_df_to_new_tree(self, df):

@@ -1,0 +1,128 @@
+stats_fields:
+  - name
+  - count
+  - count_suc
+  - count_crit
+  - count_err
+dpipe_fields:
+  - status
+  - status_info
+kp_pure_fields:
+  - title
+  - username
+kp_old_fields:
+# is known be sheet name
+#  - group_old
+#  - path_old   # NOT required as foreign key
+  - title_old
+  - username_old
+kp_new_fields:
+  - group_new
+  - group_path_new
+  - path_new
+  - title_new
+  - username_new
+kp_new_fields_sm:
+  - group_path_new
+  - title_new
+  - username_new
+kp_same_fields:
+  - notes
+  - url
+  - password
+kp_si_fields:
+  - app
+  - behoerde
+  - crit
+kp_age_sig_fields:
+  - sig_hostname
+  - sig_app
+  - sig_behoerde
+  - sig_crit
+  - sig_item
+
+entries_old_sm_table:
+  dpipe_fields:
+  add: [ pk, role_index, item ]
+  kp_si_fields:
+  # kp_age_sig_fields:
+  kp_old_fields:
+  kp_same_fields:
+
+entries_old_table:
+  dpipe_fields:
+  add: [ pk, role_index, item ] 
+  kp_si_fields:
+  kp_age_sig_fields:
+  kp_old_fields:
+  kp_same_fields:
+
+wanted_table:
+  kp_si_fields:
+  add: [fk, role_index, hostname_list, item, sig_item, mapped]
+  kp_new_fields_sm:
+  # hide: [mapped, sig_item, password]
+# XXX introduce role tags
+#
+#
+progress_sm_table:
+  dpipe_fields:
+  add: [ pk, hostnames ]
+  kp_old_fields:
+  kp_new_fields:
+  kp_same_fields:
+  
+# XXX for wanted compare to existing logic: alfresco, weblogic, DMS-Cache
+# just check progress of matched files here. 
+progress_wanted_table:
+  add: [ 'pk' ]  # XXX name it pk_src ?
+  dpipe_fields:
+  kp_si_fields:
+  kp_new_fields:
+
+entry_update_table:
+  add: ['title_new', 'username_new']
+
+progress_table_output_drop_fields: 
+#  - hostname_list
+
+debug_basic_fields:
+  - title_old
+outcommented_fields:
+  - hostname
+  - group_new
+
+entries_for_merge_table:
+  add: [ pk, role_index, title_old, item, sig_item ]
+  kp_si_fields:
+  # added this for a result table
+  kp_same_fields:
+
+debug_table:
+  #sort: ['app']  #  , 'behoerde', 'crit', 'sig_item']
+  add: [ role_index, title_old, item, sig_item ]
+  #kp_si_fields:
+
+debug_w_table:
+  add: [ fk, role_index ]
+  kp_new_fields_sm:
+  kp_si_fields:
+
+xlsx_framedumps:
+  #  old_entries:
+  debug:
+  wanted:
+  progress_wanted:
+
+# these loop old gruop names
+xlsx_framedumps_groups:
+#  wanted_hs:
+  entries_old:
+
+# special sheet name lists
+xlsx_framedumps_others:
+  stats:
+
+stats_table:
+  stats_fields:
+

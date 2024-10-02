@@ -2,14 +2,14 @@ import logging
 import pandas as pd
 from common import data_in
 from utils import setup_logger
-from AbstractBase import AbstractReader
+from baseReader import BaseReader
 from fileBase import FileBase
 
 logfn = __name__+'.log'
 logger = setup_logger(__name__, logfn, level=logging.DEBUG)
 
 
-class ExcelReader(AbstractReader, FileBase):
+class ExcelReader(BaseReader, FileBase):
     """ A class to read an Excel file """
     data = None
     fieldnames_dict = {}
@@ -37,8 +37,11 @@ class ExcelReader(AbstractReader, FileBase):
         # logger.debug('fieldnames_dict: %s', self.fieldnames_dict)
         return self.fieldnames_dict[fn]
 
+    def set_src_dir(self, src_dir):
+        self.src_dir = src_dir
+
     def init_reader(self):
-        self.in_SI = data_in.joinpath(self.sub, self.cfg_si['in_SI'])
+        self.in_SI = str(self.src_dir.joinpath(self.cfg_si['in_SI']))
 
     def read_first(self):
         logger.debug('self.cfg_si: %s', self.cfg_si)

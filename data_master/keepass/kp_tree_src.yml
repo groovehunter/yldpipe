@@ -1,0 +1,28 @@
+DB:
+  Prod:
+  Vorprod:
+  Test:
+Weblogic:
+Alfresco_Solr:
+DMS-Cache:
+Monitoring:
+  CheckMK:
+PKI:
+eKP-FH:
+EGVP-E:
+  FachG:
+eIP-AdminUI:
+Sonstiges:
+Citrix:
+Linux:
+Java:
+SecureBox:
+Ansible:
+URL:
+opentext:
+Windows:
+  SQL-Server:
+  Rendition-Server:
+  Management:
+  Captiva-Server:
+  Scanclient:

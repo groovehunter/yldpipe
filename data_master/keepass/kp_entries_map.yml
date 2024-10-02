@@ -1,0 +1,63 @@
+
+TODO: 
+# in DB
+Produktiv:
+  - ({ger}) (.*)
+  - ({ger}) alfresco
+  - ({ger}) eip
+  - ({ger}) eip_svc
+
+Pilotierung: 
+  - (ekpc)({crit2})
+  - (egvp)({crit2})
+Test: 
+
+DB:
+Linux:
+Weblogic:
+  - ({ger}) Domain ({crit}) (.*)
+  - (eKP Domain) ({crit}) .*
+  - (Global Trust Credentials) ({crit})
+  - (salf-Domain) (.*)
+  - (seip-Domain) (.*)
+  - (Test) (.*)
+  - (Test-Installation) (.*)
+  - (Weblogic) ({host})(.*)
+SQL-Server:
+Rendition-Server:
+Captiva-Server:
+#
+PKI:
+Lizenzen:
+DMS-Cache:
+Citrix:     
+
+### pathmap
+Alfresco:
+Alfresco_Solr:
+  - (Serviceuser Client) ({host})
+  - (Adminkennung) (.*)
+  - (Keystore) ({host})
+  - (.*) (Jolokia)
+  - (Truststore) ({host})
+eKP-FH:
+EGVP-E:
+eIP-AdminUI:
+
+
+
+### throw away
+skip:
+  Monitoring:
+  Java:       
+  opentext:   
+  URL:        
+  Ansible:    
+  SecureBox: 
+
+  Windows: 
+    Scanclient:
+    Management:
+
+# PKI Testzertifikate:
+# Neue Gruppe:

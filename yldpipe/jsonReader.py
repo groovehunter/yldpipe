@@ -1,5 +1,8 @@
 import logging
 import json
+from logging.config import fileConfig
+from os.path import exists, dirname
+from os import makedirs
 from anytree import AnyNode, Node, RenderTree
 from AbstractBase import AbstractReader
 from anytree.importer import JsonImporter
@@ -14,9 +17,6 @@ class JsonReader(AbstractReader):
     """ access a set of files as input """
     cfg_si = {}
     reader = {}
-
-    def __init__(self):
-        self.buffer = {}
 
     def init_reader(self):
         logger.debug('opening file %s', self.fn_in)
@@ -56,10 +56,19 @@ class JsonStorage(AnytreeStorage):
         if data is None:
             data = {}
         self.data = data
+        self.fcontent = None
 
     def set_src(self, fp):
         self.fp = fp
-        with open(fp) as file:
+        parent = dirname(fp)
+        if not exists(parent):
+            logger.debug('creating dir %s', parent)
+            makedirs(parent)
+
+
+    def read(self):
+        fp = self.fp
+        with open(fp, 'r') as file:
             self.fcontent = json.load(file)
 
     def _import(self):
@@ -67,6 +76,8 @@ class JsonStorage(AnytreeStorage):
         # print(RenderTree(self.root))
 
     def create_tree_from_json(self, attrs):  # root case
+        if self.fcontent is None:
+            self.read()
         json = self.fcontent
 
         root_node = CustomNode("root")
@@ -107,9 +118,14 @@ class JsonStorage(AnytreeStorage):
         entry = Entry(**json)
         return entry
 
-    def find_groups_by_path(self, path):
+    def find_groups_by_path(self, path, **kwargs):
         path = 'root/'+path
         val = path.replace('_', ' ')
         #kwargs = {'typeCode': 2}
         kwargs = {}
         return super().find_groups_by_path(val, name='mypath', **kwargs)
+
+    def write(self):
+        fp = self.fp
+        with open(fp, 'w') as file:
+            json.dump(self.data, file)

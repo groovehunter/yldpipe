@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class AbstractReader(ABC):
+    in_SI = None
+
     @abstractmethod
     def read(self, fn):
         pass
@@ -22,7 +24,7 @@ class AbstractWriter(ABC):
         pass
 
     @abstractmethod
-    def set_dstfn(self, dstfn):
+    def set_dst(self, dstfn):
         pass
 
     @abstractmethod
@@ -43,4 +45,7 @@ class AbstractStorage(ABC):
 
     @abstractmethod
     def find_entry_by_path(self, path):
+        pass
+
+    def load_hierarchy(self, path):
         pass

@@ -1,0 +1,54 @@
+
+### find by name - here unused
+# partial identification, only for the wanted items, 
+# that means, other folders of DB will be just copied
+DB:
+  #  old: Alfresco
+  #serviceuser:  # not sure if needed or what to put here
+
+Linux:
+
+Alfresco_Solr: 
+  old: Alfresco
+  ArbG:
+  SozG:
+  FinG:
+  serviceuser:  # not sure if needed or what to put here
+
+# subgroups in eIP are the gerichte
+# subgroup for eKP is right "eKP" 
+Weblogic:
+  old: Weblogic
+  eKP:
+  ArbG:
+  SozG:
+  FinG:
+  
+Monitoring:
+Windows: 
+SQL-Server:
+Rendition-Server:
+Management:
+Captiva-Server:
+Scanclient:
+#
+PKI:
+Lizenzen:
+DMS-Cache:
+  old: DMS-Cache
+Citrix:     
+Java:       
+opentext:   
+URL:        
+Ansible:    
+SecureBox: 
+
+### pathmap
+eKP-FH:
+  OR:
+    - ekP
+    - FachG Admins
+EGVP-E: EGVP
+eIP-AdminUI: eIP
+
+

@@ -1,6 +1,6 @@
 # from abc import abstractmethod
 import yaml
-from AbstractBase import AbstractReader
+from baseReader import BaseReader
 from anytreeStorage import AnytreeStorage, CustomNode
 from anytree.importer import DictImporter
 # from anytree import Node
@@ -13,13 +13,10 @@ logfn = __name__+'.log'
 logger = setup_logger(__name__, logfn, level=logging.DEBUG)
 
 
-class YamlReader(AbstractReader):
+class YamlReader(BaseReader):
     """ access a set of files as input """
     cfg_si = {}
     reader = {}
-
-    def __init__(self):
-        self.buffer = {}
 
     def init_reader(self):
         logger.debug('opening file %s', self.fn_in)
@@ -39,9 +36,6 @@ class YamlReader(AbstractReader):
         for fn in self.cfg_si['out_fns']:
             self.read(fn)
 
-    def get_buffer(self, fn):
-        return self.buffer[fn]
-
 
 class YamlStorage(AnytreeStorage):
     """ class for yaml tree DB """
@@ -51,6 +45,7 @@ class YamlStorage(AnytreeStorage):
         if data is None:
             data = {}
         self.data = data
+        self.root_node = CustomNode('root')
 
     def set_src(self, fp):
         self.fp = fp
@@ -59,23 +54,18 @@ class YamlStorage(AnytreeStorage):
         with open(self.fp, 'w') as file:
             yaml.dump(self.data, file)
 
-    def load_hierarchy_from_yaml(self, fp):
-        with open(fp) as file:
-            self.yaml = yaml.load(file, Loader=yaml.FullLoader)
-
+    # XXX Moved to anytreeStorage, is used by other subclasses
+    """
     def create_tree_from_yaml(self, yaml, attrs):
-        """ create a tree from a yaml """
+        # create a tree from a yaml 
         # if root is given in data, use it, else create a root node
-        root = CustomNode('root')
         #root.mypath = 'root'
         self.attrs = attrs
-        self.rec_yaml(yaml, root)
-        self.root_node = root
+        self.rec_yaml(yaml, self.root_node)
         # self.render()
-        # return root
 
     def rec_yaml(self, data, node):
-        """ recurse nested dict (ie from yaml) and add all content as tree descendants """
+        # recurse nested dict (ie from yaml) and add all content as tree descendants
         #logger.debug("enter recursion with node name %s, path=%s", node.name, node.mypath)
         #if data:
             #logger.debug('data: %s', data)
@@ -92,9 +82,10 @@ class YamlStorage(AnytreeStorage):
                 self.rec_yaml(item, child_node)
         else:
             pass
+    """
 
     def find_groups_by_path(self, path):
-        # logger.debug('path: %s', path)
+        logger.debug('path: %s', path)
         val = 'root/'+path
         kwargs = {}
         return super().find_groups_by_path(val, name='mypath', **kwargs)
