@@ -47,7 +47,7 @@ class KdbxStorage(AnytreeStorage, PyKeePass):
         self.root_node = keepassNode('root')
         self.root_node.entries = []
         self._rec_tree(self.root_node, self.root_group)
-        self.render()
+        # self.render()
 
     def _rec_tree(self, node, group):
         if group.subgroups == []:
@@ -81,7 +81,7 @@ class KdbxStorage(AnytreeStorage, PyKeePass):
     """
 
     def find_groups_by_path(self, path, **kwargs):
-        logger.debug('path: %s', path)
+        #logger.debug('path: %s', path)
         res = PyKeePass.find_groups_by_path(self, [path])
         #logger.debug('res: %s', res)
         return res

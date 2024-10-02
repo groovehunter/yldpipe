@@ -32,7 +32,8 @@ class SICache(ExternalDataInterface):  #(ExcelCache):
     def __init__(self):
         self.mapping = {
             'get_data_for_one': self.get_hosts_for_app,
-            'get_all_of_x': self.get_hosts_all
+            'get_all_of_x': self.get_hosts_all,
+            'get_attr_all_of_x': self.get_all_hosts_attr,
         }
         self.si_data = None
 
@@ -68,6 +69,13 @@ class SICache(ExternalDataInterface):  #(ExcelCache):
         result = data[data['Rolle'].str.startswith('e')]
         return result['Servername'].tolist()
 
+    def get_all_hosts_attr(self, attr):
+        if self.si_data is None:
+            self.cache_si_data()
+        data = self.si_data.fillna('')
+        data = data[data['Rolle'].str.startswith('e')]
+        result = data[attr].tolist()
+        return result
 
     def get_data_for_host(self, hostname):
         if self.si_data is None:

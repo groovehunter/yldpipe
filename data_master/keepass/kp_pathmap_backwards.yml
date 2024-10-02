@@ -33,6 +33,7 @@ Captiva-Server:
 Scanclient:
 #
 PKI:
+  old: PKI
 Lizenzen:
 DMS-Cache:
   old: DMS-Cache

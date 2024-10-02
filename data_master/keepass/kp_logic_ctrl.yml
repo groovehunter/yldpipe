@@ -2,12 +2,18 @@
 # types/steps of work; order is partly important
 work:
   - dump_group_entries
+  - dump_wanted
+  # - dump_copyall
+  - dump_hostspecific
+  
   # next items dependent on dump_group_entries
 #  - loop_sandbox
 #  - loop_unknown
 #  - loop_sandbox_drop_from_old
 #  - loop_unknown_drop_from_old
   - loop_crit
+  - loop_hostspecific
+#  - allgroups_old_match
 
   # independent
 #  - loop_copyall 
@@ -19,8 +25,8 @@ work:
 # For devel mostly, steps of loop_crit
 step_do:
   - generate_wanted_table
-step_skip:
   - check_entry_for_prominent_terms
+step_skip:
   - group_match_by_serverlist_tags
   - update_matching_entries
   - calc_and_update_title_and_username
@@ -36,8 +42,11 @@ drop_for_output: True
 loop_crit:
 #  - DMS-Cache
   - Alfresco_Solr
-  - Weblogic
+#  - Weblogic
   #- DB
+
+loop_hostspecific:
+  - PKI
 
 loop_copy_and_clean:
   - PKI

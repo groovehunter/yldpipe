@@ -21,7 +21,7 @@ elif uname_info.system == 'Linux':
         data_out = data_dir.joinpath('data_out')
         data_master = project_dir.joinpath('data_master')
 
-print('project_dir: ', project_dir)
+# print('project_dir: ', project_dir)
 # for import_server_infra_csv.py
 # and  excel_pd.py
 

@@ -96,7 +96,7 @@ class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderB
         ### logic for WANTED entries
         if 'dump_group_entries' in work:
             self.allgroups_age_dump_entries()
-            self.allgroups_hs_dump_entries() # ?
+            # self.allgroups_hs_dump_entries() # ?
 
         if 'loop_sandbox' in work:
             self.allgroups_wanted_loop_sandbox()

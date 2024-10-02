@@ -2,24 +2,6 @@
 ### find by name - here unused
 # partial identification, only for the wanted items, 
 # that means, other folders of DB will be just copied
-DB:
-  #  old: Alfresco
 
-Linux:
-
-Alfresco:
-  old: Alfresco
-
-to-sort:
-    old: to-sort
-
-Weblogic:
-  old: Weblogic
-  
-Ansible:    
-  old: Ansible
-
-sound_creation:
-  old: test_sc
-
+placeholder:
 

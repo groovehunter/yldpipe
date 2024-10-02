@@ -1,11 +1,11 @@
 # types of
 work:
-  # - dump_group_entries
+  #- dump_group_entries
   # next are dependent on dump_group_entries
   #- loop_sandbox
-  # - loop_unknown
+  #- loop_unknown
   #- loop_sandbox_drop_from_old
-  # - loop_unknown_drop_from_old
+  #- loop_unknown_drop_from_old
   - loop_crit
   #- loop_hostspecific
   #- allgroups_old_match
@@ -33,13 +33,11 @@ drop_for_output: True
 ###################
 # XXX rename to loop_term1 or kind of
 loop_crit:
-  - Weblogic
+#  - Weblogic
   - Alfresco
   - Solr
-loop_hostspecific: []
 
-# with subgroups
+loop_hostspecific: []
 loop_copyall_rec: []
-# without subgroups
 loop_copyall: []
 

@@ -19,10 +19,22 @@ map_kpgroup_agekey:
 
 
 PKI:
+  items:
+    - Transport_PIN
+  map:
+    Transport_PIN: TPIN
+  suffix:
+    hostname: ""
+    
   title_pat: "Transport P.*"
   username_pat: "z.*rz-sued-bayern.de" # regex XXX ? 
-  title_new_pat: "Transport_Pin_${host}"
-  username_new_pat: "${host}"
+
+
+  attrs_new_pat_d:
+    title:
+      Transport_PIN: "Transport Pin ${host}"
+    username:
+      Transport_PIN: "${host}-a.rz-sued-bayern.de" 
 
   prepare_logic:
     username:
@@ -55,11 +67,12 @@ Weblogic:
       Operator: "$behoerde Domain $crit Operator"
       Keystore: "$behoerde Domain $crit Keystore" 
       Truststore: "$behoerde Domain $crit Truststore"
-    username_new_pat_d:
-      Admin: "weblogic"
-      Operator: "operator"
-    title_new_pat: "${crit}_${item}"
-    #pattern_title_old: "%s.*Domain.*%s.*%s"
+    attrs_new_pat_d:
+      username:
+        Admin: "weblogic"
+        Operator: "operator"
+      title: 
+        all_items: "${crit}_${item}"
     pattern_title_old: "$behoerde.*Domain.$crit.*$item"
     pattern_title_list:
       - "$behoerde.*Domain.*$crit.*$item"
@@ -101,14 +114,17 @@ Alfresco_Solr:
     items:
       - Admin
       - Keystore
-      - Truststore
+      #- Truststore
     map:
       Admin: "Adminkennung $hostname"
       Keystore: "Keystore $hostname"
       Truststore: "Truststore $hostname"
-    username_new_pat_d:
-      Admin: "admin"
-    title_new_pat: "${crit}_${item}"
+    attrs_new_pat_d:
+      username:
+        Admin: "admin"
+        Keystore: "keystore_host_"
+      title: 
+        all_items: "${crit}_${item}"
     pattern_title_old: "$item $hostname"
     pattern_title_list:
       - "${item} ${hostname}"
@@ -123,12 +139,15 @@ Alfresco_Solr:
     age: "eIP-Alf_${behoerde}_${crit}"
     loop_gericht: False
     items:
-      #- serviceuser
+      - serviceuser
     map:
       serviceuser: "Serviceuser.* $hostname"
-    title_new_pat: "Serviceuser_$behoerde_$crit"
-    username_new_pat_d:
-      serviceuser: "alf_svc"
+
+    attrs_new_pat_d:
+      title: 
+        all_items: "Serviceuser_$behoerde_$crit"
+      username:
+        serviceuser: "alf_svc"
   
 
 DMS-Cache:

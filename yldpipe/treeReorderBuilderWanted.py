@@ -10,21 +10,21 @@ lg = setup_logger(__name__+'_2', __name__+'_2.log')
 class TreeReorderBuilderWanted:
 
     def allgroups_age_dump_entries(self):
-            # self.frame_fields['entries_old_table'] = self.cfg_kp_process_fields['entries_old_table']
-            groups_new = self.cfg_kp_logic_ctrl.get('loop_crit', []) + self.cfg_kp_logic_ctrl.get('loop_copyall', [])
-            if groups_new is None:
-                return
-            for group_name_new in groups_new:
-                lg.debug('group_name_new: %s', group_name_new)
-                group_name_old = self.groups_map_new_to_old(group_name_new)
-                self.dump_group_entries(group_name_old, group_name_new)
+        groups_new = []
+        work = self.cfg_kp_logic_ctrl.get('work', [])
+        # self.frame_fields['entries_old_table'] = self.cfg_kp_process_fields['entries_old_table']
+        # self.frame_fields['entries_old_table'] = self.frame_fields['entries_old_sm_table']
+        if 'dump_wanted' in work:
+            groups_new += self.cfg_kp_logic_ctrl.get('loop_crit', [])
+        if 'dump_copyall' in work:
+            groups_new += self.cfg_kp_logic_ctrl.get('loop_copyall', [])
+        if 'dump_hostspecific' in work:
+            groups_new += self.cfg_kp_logic_ctrl.get('loop_hostspecific', [])
 
-                # includes a call for check_entry_for_prominent_terms, so next step is possible
-
-    def allgroups_hs_dump_entries(self):
-        groups_new = self.cfg_kp_logic_ctrl.get('loop_hostspecific', [])
-        self.frame_fields['entries_old_table'] = self.frame_fields['entries_old_sm_table']
+        if groups_new == []:
+            return
         for group_name_new in groups_new:
+            lg.debug('group_name_new: %s', group_name_new)
             group_name_old = self.groups_map_new_to_old(group_name_new)
             self.dump_group_entries(group_name_old, group_name_new)
 
@@ -211,9 +211,9 @@ class TreeReorderBuilderWanted:
 
     def allgroups_hs_do_cases(self, groups_new):
         for group_name_new in groups_new:
-            lg.debug('group_name_new: %s', group_name_new)
             group_name_old = self.groups_map_new_to_old(group_name_new)
-            group_obj_old = self.kp_src.find_groups_by_path([group_name_old])
+            lg.debug('group_name_old: %s - group_name_new: %s', group_name_old, group_name_new)
+            group_obj_old = self.kp_src.find_groups_by_path(group_name_old)
             group_logic = self.cfg_kp_wanted_logic[group_name_new]
 
             if group_logic.get('case_1') is not None:
@@ -255,7 +255,10 @@ class TreeReorderBuilderWanted:
         self.stats_init()
         items = group_logic.get('items')
         itemmap = group_logic.get('map')
-        hostname_list = self.broker.call_method('get_all_of_x', 'hostname')
+        suffix = group_logic.get('suffix')
+        attrs_new_pat_d = group_logic.get('attrs_new_pat_d')
+        #hostname_list = self.broker.call_method('get_all_of_x', 'hostname')
+        hostname_list = self.broker.call_method('get_attr_all_of_x', 'Servername')
         lvlrow = {
             'group_new': group_name_new,
             'group_path_new': [group_name_new],
@@ -263,19 +266,27 @@ class TreeReorderBuilderWanted:
             'status': 'UNTOUCHED',
         }
         for hostname in hostname_list:
+            logger.debug('hostname: %s', hostname)
             for item in items:
                 row = lvlrow.copy()
                 row['hostname'] = hostname[7:14]
                 row['vm'] = hostname[7:14]
+                row['host'] = hostname
                 row['item'] = item
                 row['mapped'] = itemmap[item]
                 row['fk'] = self.count
                 #row['title_new'] = '%s %s' % (item, hostname)
-                title_new_pat = group_logic['title_new_pat']
-                username_new_pat = group_logic['username_new_pat']
-                row['title_new'] = string.Template(title_new_pat).substitute(row)
-                row['username_new'] = string.Template(username_new_pat).substitute(row)
-                self.count += 1
+                for key, anp_item in attrs_new_pat_d.items():
+                    logger.debug('check-item: %s -- key: %s, anp_item: %s', item, key, anp_item)
+                    if 'all_items' in attrs_new_pat_d[key].keys():
+                        pattern = attrs_new_pat_d[key]['all_items']
+                    else:
+                        pattern = anp_item[item]
+                    logger.debug('pattern: %s', pattern)
+                    result_substd = string.Template(pattern).substitute(row)
+                    logger.debug('result_substd: %s', result_substd)
+                    row[key + '_new'] = result_substd
+                    self.count += 1
                 self.count_suc += 1
                 ldf = len(df)
                 df.loc[ldf] = row
@@ -301,6 +312,8 @@ class TreeReorderBuilderWanted:
         age_pattern = group_logic.get('age')
         age_template = string.Template(age_pattern)
         sub_all = group_logic.get('sub_all')
+        attrs_new_pat_d = group_logic.get('attrs_new_pat_d')
+        lg.debug('attrs_new_pat_d: %s', attrs_new_pat_d)
         behoerde = ''
         self.stats_init()
         for crit in self.cfg_age['env']:
@@ -326,11 +339,15 @@ class TreeReorderBuilderWanted:
                     row['mapped'] = itemmap.get(item, item)
                     row['fk'] = self.count
                     #row['title_new'] = '%s %s' % (crit, item)
-                    title_new_pat = group_logic['title_new_pat']
-                    row['title_new'] = string.Template(title_new_pat).substitute(row)
+                    for key, anp_item in attrs_new_pat_d.items():
+                        # logger.debug('check-item: %s -- key: %s, anp_item: %s', item, key, anp_item)
+                        if 'all_items' in attrs_new_pat_d[key].keys():
+                            pattern = attrs_new_pat_d[key]['all_items']
+                        else:
+                            pattern = anp_item[item]
+                        row[key+'_new'] = string.Template(pattern).substitute(row)
+
                     # for bmarks_eip
-                    #uri_new_pat_d = group_logic['uri_new_pat_d']
-                    #row['uri_new'] = string.Template(uri_new_pat_d[item]).substitute(row)
                     if group_logic.get('use_subgroups', None):
                         group_path_new = [group_name_new, sub]
                     else:
@@ -537,6 +554,8 @@ class TreeReorderBuilderWanted:
         df = self.df_d['merged'][case_name].copy()
         title_new_pat = group_logic.get('title_new_pat')
         username_new_pat_d = group_logic.get('username_new_pat_d')
+        attrs_new_pat_d = group_logic.get('attrs_new_pat_d')
+
         #logger.debug('title_new_pat: %s', title_new_pat)
         df_up = pd.DataFrame(columns=self.frame_fields['entry_update_table'])
         for i, row in df.iterrows():
@@ -564,9 +583,14 @@ class TreeReorderBuilderWanted:
                 template_text = string.Template(username_new_pat_d[item])
                 uprow['username_new'] = template_text.substitute(row_d)
 
+            for attrs_np_key, attrs_np_item in attrs_new_pat_d.items():
+                logger.debug('attrs_np_key: %s, attrs_np_item: %s', attrs_np_key, attrs_np_item)
+
             # logger.debug('i: %s, uprow: %s', i, uprow)
             df_up.loc[i] = uprow
             self.count += 1
+
+
         lg.debug('len(df): %s, len(df_up): %s', len(df), len(df_up))
         df.update(df_up)
         # lg.debug('df.head(): %s', df[['title_new', 'username_new']].head())

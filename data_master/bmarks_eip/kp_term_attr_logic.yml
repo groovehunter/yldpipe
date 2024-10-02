@@ -1,20 +1,12 @@
-
+# nothing here for bmarks_eip
 
 # for an attribute's value(s) there might be some variations in spelling
 field_variations:
   app:
-    eKP: [ekp, EKP]
-    eIP: [eip, EIP]
   # item is sth different. Depends on group resp.app. 
   item:
-    Kutte: [Metall]
 
 field_search_spec:
-  year_in_title:
-    where: title
-    finds: title
-    how:
-      re: '\d{4}'
   # just dummy for debugging
   dummy:
     where: uri
@@ -33,15 +25,3 @@ field_search:
   ### or
   # <my_custom_special_case>:
   # etc.
-  important:
-    mark: IMPORTANT
-    enum:
-      - Howto
-      - DIY
-      - open source
-  unbekannt:
-    mark: UNKNOWN
-    # modify: set dest subgroup "unbekannt"
-    enum:
-      - test
-      - Test-Installation

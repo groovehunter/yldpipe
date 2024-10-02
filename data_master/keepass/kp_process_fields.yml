@@ -57,6 +57,11 @@ entries_old_table:
   kp_old_fields:
   kp_same_fields:
 
+wanted_hostspecific_table:
+  add: [fk, item, hostname, vm, sig_hostname]
+  kp_new_fields_sm:
+
+
 wanted_table:
   kp_si_fields:
   add: [fk, role_index, hostname_list, item, sig_item, mapped]

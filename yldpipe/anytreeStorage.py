@@ -155,7 +155,7 @@ class AnytreeStorage(AbstractStorage):
         #root.mypath = 'root'
         self.attrs = attrs
         self.rec_yaml(yaml, self.root_node)
-        self.render()
+        # self.render()
 
     def rec_yaml(self, data, node):
         """ recurse nested dict (ie from yaml) and add all content as tree descendants """

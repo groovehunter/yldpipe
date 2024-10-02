@@ -1,9 +1,7 @@
 #
-sort:
-  any: app
 
 # == kp_si_fields ! XXX delete here when no usage
-role_index_pat: "${app}_${behoerde}_${crit}_${sig_item}"
+# role_index_pat: "${app}_${behoerde}_${crit}_${sig_item}"
 
 Alfresco:
   app: eIP
@@ -15,15 +13,18 @@ Alfresco:
   loop_gericht: True
   items:
     - AdminServer
-    - AlfrescoMain
+    - home
+    #- share
   map: {}
-  username_new_pat_d:
-    Admin: "admin"
-    Share: "admin"
-  title_new_pat: "${crit}_${item}"
-  uri_new_pat_d: 
-    AdminServer: "https://_host_:8443/alfresco"
-    AlfrescoMain: "https://_host_:8443/"
+  attrs_new_pat_d:
+    uri:
+      AdminServer: "https://_host_:8443/alfresco"
+      home: "https://_host_:8443/"
+    title:
+      AdminServer: "AdminServer ${crit}_host_"
+      home: "Alfresco Startseite"
+    
+
 
 Solr:
   app: eIP
@@ -33,11 +34,13 @@ Solr:
   role_prefix: eIP_
   loop_gericht: True
   items:
-    - Admin
+    - home
   map: {}
-  title_new_pat: "${crit}_${item}"
-  uri_new_pat_d: 
-    Admin: "https://_host_:8443/alfresco"
+  attrs_new_pat_d:
+    uri:
+      home: "https://_host_:8983/"
+    title:
+      home: "Solr Startseite ${crit}_${item}"
 
 Weblogic:
   app: eIP
@@ -51,13 +54,11 @@ Weblogic:
     - AdminServer
     - Main
   map: {}
-  username_new_pat_d:
-    Admin: "weblogic"
-    Operator: "operator"
-  title_new_pat: "${crit}_${item}"
-  uri_new_pat_d:
-    AdminServer: "_host_:20100/weblogic.x.y.de"
-    Main: "_host_:8443/admin/yyy.xx"
+  attrs_new_pat_d:
+    uri:
+      home: "https://_host_:8983/"
+    title:
+      home: "Solr Startseite ${crit}_${item}"
 
   #pattern_title_old: "%s.*Domain.*%s.*%s"
   pattern_title_old: "$behoerde.*Domain.$crit.*$item"
