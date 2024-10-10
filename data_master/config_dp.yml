@@ -13,6 +13,14 @@ default_profile:
   fnames_src: data
   fnames_dst: config
 
+floworg_equip:
+  storage_src: yamldir
+  storage_dst: yaml
+  writer: excel
+  sub: floworg_equip
+  sub_in: floworg_equip
+  sub_out: floworg_equip
+
 wanted_bmarks_eip:
   storage_src: json
   storage_dst: json

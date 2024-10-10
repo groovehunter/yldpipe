@@ -1,0 +1,10 @@
+
+### find by name - here unused
+# partial identification, only for the wanted items, 
+# that means, other folders of DB will be just copied
+
+# Format is:
+# <Groupname>
+#   old: <oldgroupname>
+# maybe subgroups?
+

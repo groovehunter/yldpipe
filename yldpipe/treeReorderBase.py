@@ -1,16 +1,10 @@
-from tokenize import group
-
 import pandas as pd
-import yaml
-from YamlConfigSupport import YamlConfigSupport
 from common import data_master, data_out, data_in
-
 from shutil import copyfile
-from random import randint
 from utils import setup_logger
 import logging
 
-from yldpipe.dataBroker import DataBroker
+from dataBroker import DataBroker
 
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
 lg = setup_logger(__name__+'_2', __name__+'_2.log')
@@ -18,7 +12,8 @@ lg = setup_logger(__name__+'_2', __name__+'_2.log')
 class TreeReorderBase(DataBroker):  # YamlConfigSupport):
 
     def __init__(self) -> None:
-        self.config_dir = str(data_master.joinpath(self.sub))
+        # set in __init__ of TreeReorderBuilder
+        #self.config_dir = str(data_master.joinpath(self.sub))
         self.config_dir_master = str(data_master)
         self.dt_fn = 'kp_tree_team.yml'
         self.dt_d = self.load_config(self.dt_fn)

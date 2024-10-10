@@ -1,0 +1,23 @@
+
+
+# for an attribute's value(s) there might be some variations in spelling
+field_variations:
+  somefield:
+  # item is a sort of leaf node
+  item:
+    Operator: [operator, ops]
+
+# new to keepass builder from yldpipe
+field_search_spec:
+  year_in_title:
+    where: title
+    finds: title
+    how:
+      re: '\d{4}'
+
+field_search:
+  # format is:
+  # <some attr>:
+  #   <check style>:
+  #     <check value(s)>
+  #   mark: <NEW_STATUS>

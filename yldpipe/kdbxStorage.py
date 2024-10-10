@@ -4,7 +4,7 @@ from anytreeStorage import AnytreeStorage
 import logging
 import itertools
 from utils import setup_logger
-from yldpipe.anytreeStorage import CustomNode
+from anytreeStorage import CustomNode
 
 logger = setup_logger(__name__, __name__+'.log', level=logging.DEBUG)
 from pykeepass import PyKeePass

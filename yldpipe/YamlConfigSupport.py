@@ -63,10 +63,15 @@ class YamlConfigSupport:
         """ solution for inheritance in the yaml dict """
         config = {}
         for directory in directories:
-            yaml_files = glob.glob(os.path.join(directory, "*.yaml"))
+            yaml_files = glob.glob(os.path.join(directory, "*.yml"))
+            # logger.debug('yaml_files: %s', yaml_files)
             for yaml_file in yaml_files:
-                with open(yaml_file, 'r') as f:
-                    config.update(yaml.safe_load(f))
+                logger.debug('loading config file %s', yaml_file)
+                try:
+                    with open(yaml_file, 'r') as f:
+                        config.update(yaml.safe_load(f))
+                except:
+                    logger.debug('error loading file %s', yaml_file)
         return config
 
 

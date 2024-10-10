@@ -23,17 +23,14 @@ PKI:
     - Transport_PIN
   map:
     Transport_PIN: TPIN
-  suffix:
-    hostname: ""
     
   title_pat: "Transport P.*"
   username_pat: "z.*rz-sued-bayern.de" # regex XXX ? 
 
-
   attrs_new_pat_d:
-    title:
+    title_new:
       Transport_PIN: "Transport Pin ${host}"
-    username:
+    username_new:
       Transport_PIN: "${host}-a.rz-sued-bayern.de" 
 
   prepare_logic:
@@ -68,10 +65,12 @@ Weblogic:
       Keystore: "$behoerde Domain $crit Keystore" 
       Truststore: "$behoerde Domain $crit Truststore"
     attrs_new_pat_d:
-      username:
+      username_new:
         Admin: "weblogic"
         Operator: "operator"
-      title: 
+        Keystore: ""
+        Truststore: ""
+      title_new: 
         all_items: "${crit}_${item}"
     pattern_title_old: "$behoerde.*Domain.$crit.*$item"
     pattern_title_list:
@@ -94,9 +93,12 @@ Weblogic:
       Operator: "eKP Domain $crit Operator"
       Keystore: "eKP Domain $crit Keystore" 
       Truststore: "eKP Domain $crit Truststore"
-    username_new_pat_d:
-      Admin: "weblogic"
-    title_new_pat: "${crit}_${item}"
+    attrs_new_pat_d:
+      username_new:
+        Admin: "weblogic"
+      title_new: 
+        all_items: "${crit}_${item}"
+
     #pattern_title_old: "%s.*Domain.*%s.*%s"
     pattern_title_old: "$behoerde.*Domain.$crit.*$item"
     pattern_title_list:

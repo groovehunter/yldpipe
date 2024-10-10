@@ -49,6 +49,7 @@ class CustomNode(Node):
     def title(self, val):
         self.name = val
 
+
 class AnytreeStorage(AbstractStorage):
     """ class for anytree storage """
     root_node = None
@@ -148,6 +149,19 @@ class AnytreeStorage(AbstractStorage):
 
     def create_tree_from_json(self, attrs):
         pass
+
+    def create_tree_from_yaml_dir(self):
+        path = self.cfg_si['db_src']
+        for fn in os.path.listdir(path):
+            fn_ = os.basename(fn)
+            parts = fn_.split('_')
+            logger.debug('parts: %s', parts)
+            with open(fn) as f:
+                node = CustomNode(parts[0])
+                self.load_hierarchy_from_yaml(f)
+
+
+
 
     def create_tree_from_yaml(self, attrs):
         """ create a tree from a yaml """

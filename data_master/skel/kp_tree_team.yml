@@ -1,0 +1,51 @@
+DB:
+  Produktiv:
+  Test:
+  Pilotierung:
+  Alfresco:
+Weblogic:
+  ArbG:
+  SozG:
+  FinG:
+  eKP:
+  Sandbox:
+  unbekannt:
+Alfresco_Solr:
+  ArbG:
+  FinG:
+  SozG:
+  Sandbox:
+  serviceuser:
+  unbekannt:
+DMS-Cache:
+  ArbG:
+  FinG:
+  SozG:
+  Sandbox:
+  unbekannt:
+###################
+Monitoring:
+PKI:
+eKP:
+  FachG Admins:
+EGVP:
+eIP:
+  FachG Admins:
+Windows:
+  SQL-Server:
+  Rendition-Server:
+  Management:
+  Captiva-Server:
+  Scanclient:
+Sonstiges:
+  Citrix:
+  Linux:
+  Java:
+  SecureBox:
+  Ansible:
+  URL:
+  Archiv-Abgelaufene PW:
+  opentext:
+  Lizenzen:
+Recycle Bin:
+TODO:

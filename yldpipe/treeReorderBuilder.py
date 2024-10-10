@@ -24,11 +24,15 @@ if is_windows:
 class TreeReorderBuilder(TreeReorderBase, TreeReorderBuilderWanted, TreeReorderBuilderBase,
                          FrameIOandCacheSupport, TransformFunc):
 
-    def __init__(self, app):
+    def __init__(self, app, config_dir=None):
         self.app = app
         self.sub = app + '/'
         # XXX move to start of init_framecache
         FrameIOandCacheSupport.__init__(self)
+        if config_dir is None:
+            self.config_dir = str(data_master.joinpath(self.sub))
+        else:
+            self.config_dir = config_dir
         TreeReorderBase.__init__(self)
         # self.config_dir = data_master.joinpath('keepass')
         self.buffer_names = {}

@@ -83,7 +83,7 @@ class TreeReorderBuilderWanted:
             'crit': None,
             'behoerde': None,
         }
-        logger.debug('group: %s - entry: %s', 'see log-2', entry)
+        # logger.debug('group: %s - entry: %s', 'see log-2', entry)
 
         for key, item in field_search_spec.items():
             # lg.debug('item: %s', item)
@@ -104,7 +104,7 @@ class TreeReorderBuilderWanted:
         for attr in self.cfg_kp_process_fields['kp_pure_fields']+self.cfg_kp_process_fields['kp_same_fields']:
 
             text = str(getattr(entry, attr))
-            logger.debug('attr: %s - text: %s', attr, text)
+            # logger.debug('attr: %s - text: %s', attr, text)
             if text is None or text=='':
                 continue
             for fv_key, fv_item in field_variations.items():
@@ -266,7 +266,7 @@ class TreeReorderBuilderWanted:
             'status': 'UNTOUCHED',
         }
         for hostname in hostname_list:
-            logger.debug('hostname: %s', hostname)
+            # logger.debug('hostname: %s', hostname)
             for item in items:
                 row = lvlrow.copy()
                 row['hostname'] = hostname[7:14]
@@ -277,15 +277,15 @@ class TreeReorderBuilderWanted:
                 row['fk'] = self.count
                 #row['title_new'] = '%s %s' % (item, hostname)
                 for key, anp_item in attrs_new_pat_d.items():
-                    logger.debug('check-item: %s -- key: %s, anp_item: %s', item, key, anp_item)
+                    # logger.debug('check-item: %s -- key: %s, anp_item: %s', item, key, anp_item)
                     if 'all_items' in attrs_new_pat_d[key].keys():
                         pattern = attrs_new_pat_d[key]['all_items']
                     else:
-                        pattern = anp_item[item]
-                    logger.debug('pattern: %s', pattern)
+                        pattern = anp_item.get(item, {} )
+                    # logger.debug('pattern: %s', pattern)
                     result_substd = string.Template(pattern).substitute(row)
-                    logger.debug('result_substd: %s', result_substd)
-                    row[key + '_new'] = result_substd
+                    # logger.debug('result_substd: %s', result_substd)
+                    row[key] = result_substd
                     self.count += 1
                 self.count_suc += 1
                 ldf = len(df)
@@ -344,7 +344,7 @@ class TreeReorderBuilderWanted:
                         if 'all_items' in attrs_new_pat_d[key].keys():
                             pattern = attrs_new_pat_d[key]['all_items']
                         else:
-                            pattern = anp_item[item]
+                            pattern = anp_item.get(item, '' )
                         row[key+'_new'] = string.Template(pattern).substitute(row)
 
                     # for bmarks_eip

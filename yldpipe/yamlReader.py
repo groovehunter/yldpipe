@@ -29,6 +29,7 @@ class YamlReader(BaseReader):
         return self.fieldnames
 
     def read(self, fn):
+        # XXX this method not in use?  - data_in not defined
         file_path = data_in.joinpath(fn + '.yml')
         self.buffer[fn] = yaml.load(file_path, Loader=yaml.FullLoader)
 
@@ -37,6 +38,17 @@ class YamlReader(BaseReader):
             self.read(fn)
 
 
+class YamldirStorage(AnytreeStorage):
+    def __init__(self, data=None):
+        if data is None:
+            data = {}
+        self.data = data
+        self.root_node = CustomNode('root')
+
+# this class, is it for just one schema? How to suport several schemas oder any schema?
+# possible : use schema lib
+# or define schena in our way, data_master
+#
 class YamlStorage(AnytreeStorage):
     """ class for yaml tree DB """
     importer = DictImporter()

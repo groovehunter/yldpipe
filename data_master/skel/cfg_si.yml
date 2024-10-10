@@ -1,0 +1,22 @@
+profile_name: 
+
+
+in_SI:
+
+db_src: eip.kdbx 
+use_default_group: True
+db_dst: eip_NG.kdbx
+
+tree_original_export_fn: oldtree.yml
+external_data_class: SICache
+
+
+in_fns:
+  - Fachgerichte Server
+# out_fns:
+
+
+db_file_dst: eip_NG.kdbx
+db_file_empty: eip_NG_empty.kdbx
+
+pw_dst: test

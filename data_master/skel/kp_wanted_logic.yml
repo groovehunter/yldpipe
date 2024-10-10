@@ -1,0 +1,68 @@
+
+attrs_age: [ 'some_attr' ]
+
+# using old group names here?
+map_kpgroup_agekey:
+  #Alfresco_Solr: 'eIP-Alf_'
+  Alfresco: 'eIP-Alf_'
+  DMS-Cache: 'eIP-Alf_'
+  Weblogic: 
+    OR: ['eIP_', 'eKP_', 'EGVPE_']
+
+# all sandbox mark 
+# all unknown mark
+# in compare and match, check result in old-entries table by foreign key or 
+# path_old if marked as invalid, ie. sandbox 
+
+
+Weblogic:
+  case_1:
+    app: eIP
+    dst: 
+    sub_all: [ArbG, SozG, FinG]
+    use_subgroups: True
+    age: "eIP_${behoerde}_${crit}"
+    role_prefix: eIP_
+    loop_gericht: True
+    items:
+      - Operator
+    map:
+      Operator: "$behoerde Domain $crit Operator"
+    attrs_new_pat_d:
+      username_new:
+        Operator: "operator"
+      title_new: 
+        all_items: "${crit}_${item}"
+    pattern_title_old: "$behoerde.*Domain.$crit.*$item"
+    pattern_title_list:
+      - "$behoerde.*Domain.*$crit.*$item"
+      - "$behoerde.*Domain.*$crit.*"
+      - "$behoerde.*Domain.*$item"
+  case_2:
+    app: eKP
+    dst: eKP  # logic prob together with sub_all
+    sub_all: [FachG]
+    age: "eKP_${crit}"
+    loop_gericht: False
+    items:
+      - Admin
+      - Operator
+      - Keystore
+      - Truststore
+    map:
+      Admin:    "eKP Domain $crit Admin"
+      Operator: "eKP Domain $crit Operator"
+      Keystore: "eKP Domain $crit Keystore" 
+      Truststore: "eKP Domain $crit Truststore"
+    attrs_new_pat_d:
+      username_new:
+        Admin: "weblogic"
+      title_new: 
+        all_items: "${crit}_${item}"
+
+    #pattern_title_old: "%s.*Domain.*%s.*%s"
+    pattern_title_old: "$behoerde.*Domain.$crit.*$item"
+    pattern_title_list:
+      - "eKP.*Domain.*$crit.*$item"
+      - "eKP.*Domain.*$item"
+
